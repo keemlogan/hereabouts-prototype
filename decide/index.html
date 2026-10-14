@@ -30,6 +30,8 @@ h1{font-size:22px;margin:0 0 4px;letter-spacing:-.4px;line-height:1.35}
 .on .mark:after{content:"";width:8px;height:8px;border-radius:50%;background:#fff}
 .multi .on .mark:after{border-radius:1px;width:9px;height:5px;background:none;border:2px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
 .opt b{display:block;font-weight:600}
+.enl{display:block;font-size:13.5px;color:#4A4D55;font-weight:500;margin-top:1px}
+.ens{color:#8A8D94!important;font-size:12px!important;margin-top:0!important}
 .opt small{display:block;color:var(--sub);font-size:12.5px;margin-top:2px}
 .opt.vcard{flex-direction:column;padding:10px}
 .opt.vcard .pv{width:100%;height:300px;border-radius:8px;overflow:hidden;background:#EEE;display:flex;align-items:center;justify-content:center}
@@ -64,10 +66,10 @@ a{color:var(--acc)}
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><div class="brand">logit<span>.</span> <span style="color:#6E727A;font-size:14px;font-weight:600;letter-spacing:0">팀 의사결정</span></div><div class="prog"><i id="pg"></i></div><div class="cnt" id="cnt"></div></div>
+  <div class="top"><div class="brand">logit<span>.</span> <span style="color:#6E727A;font-size:14px;font-weight:600;letter-spacing:0">팀 의사결정 · Team decisions</span></div><div class="prog"><i id="pg"></i></div><div class="cnt" id="cnt"></div></div>
   <div class="card" id="card"></div>
 </div>
-<div class="nav"><div class="in"><button class="btn g" id="prev">이전</button><button class="btn p" id="next">다음</button></div></div>
+<div class="nav"><div class="in"><button class="btn g" id="prev">이전 · Back</button><button class="btn p" id="next">다음 · Next</button></div></div>
 <div class="toast" id="toast"></div>
 <script>
 const PROTO="../";
@@ -84,74 +86,106 @@ const W={
 };
 // type: single | multi ; opts: [value, label, desc, preview?]
 const Q=[
- {sec:"0. 응답자",id:"who",t:"응답자 이름을 알려 주세요.",en:"Who is answering?",type:"single",opts:[["Joel","Joel"],["김형도","김형도"],["권도훈","권도훈"]],free:"목록에 없으면 이름 입력"},
+ {sec:"0. 응답자 · Respondent",id:"who",t:"응답자 이름을 알려 주세요.",en:"Who is answering?",type:"single",opts:[["Joel","Joel"],["김형도","김형도"],["권도훈","권도훈"]],free:"목록에 없으면 이름 입력"},
 
- {sec:"A. 기본 정체성",id:"name",t:"앱 이름을 무엇으로 할까요?",en:"What should we call the app?",type:"single",
+ {sec:"A. 기본 정체성 · Basics",id:"name",t:"앱 이름을 무엇으로 할까요?",en:"What should we call the app?",type:"single",
   why:"제안서 첫 장과 GitHub 저장소 이름이 됩니다. 프로토타입은 지금 'logit'으로 되어 있습니다.",
   opts:[["logit","logit","log + it. 기록(log) 중심이라는 게 바로 보임"],["Corners","Corners","팀 문서의 가제. 골목·모퉁이 느낌"],["Hereabouts","Hereabouts","'이 근처'. 주변 추천 느낌이 강함"]],free:"다른 이름 제안 / 의견"},
- {sec:"A. 기본 정체성",id:"purpose",t:"이 앱은 무엇을 하는 앱인가요? (가장 가까운 하나)",en:"In one line, what is this app for?",type:"single",
+ {sec:"A. 기본 정체성 · Basics",id:"purpose",t:"이 앱은 무엇을 하는 앱인가요? (가장 가까운 하나)",en:"In one line, what is this app for?",type:"single",
   why:"이게 정해져야 기능·화면 우선순위가 정해집니다. 지금 팀 문서와 프로토타입 사이에 이 부분이 섞여 있습니다.",
   opts:[["diary","내 여행·산책 경로를 기록하는 개인 일기","혼자 쓰는 기록이 중심. 공유는 부가"],["social","경로 기록 + 친구에게 공유하는 SNS","여행판 인스타그램 + Strava (팀 문서 방향)"],["discover","남들이 기록한 데이터로 '내 주변 갈 곳'을 찾는 앱","추천·발견이 중심. 기록은 데이터를 모으는 수단"],["all","기록 + 공유 + 주변 추천 모두","범위가 가장 큼"]],free:"우리 앱을 한 문장으로 쓴다면?"},
- {sec:"A. 기본 정체성",id:"users",t:"주 사용자는 누구인가요? (여러 개 선택 가능)",en:"Who are the main users? (multiple)",type:"multi",
+ {sec:"A. 기본 정체성 · Basics",id:"users",t:"주 사용자는 누구인가요? (여러 개 선택 가능)",en:"Who are the main users? (multiple)",type:"multi",
   opts:[["exchange","교환학생·외국인 거주자","Joel의 문제 정의에서 출발한 그룹"],["kstudent","한국 대학생","캠퍼스 주변 산책·맛집"],["traveler_kr","국내 여행자","주말 여행·당일치기"],["traveler_world","해외 여행자","나라·도시 단위 여행"],["local","동네 주민","'현지인만 아는 곳'을 올려 주는 쪽"]],free:"가장 우선인 한 그룹과 그 이유"},
- {sec:"A. 기본 정체성",id:"scope",t:"서비스 범위는 어디까지로 할까요?",en:"Global service or Seoul only?",type:"single",
+ {sec:"A. 기본 정체성 · Basics",id:"scope",t:"서비스 범위는 어디까지로 할까요?",en:"Global service or Seoul only?",type:"single",
   why:"데모 데이터를 어디서 모을지, 지도·언어를 무엇으로 할지가 여기서 갈립니다.",
   opts:[["campus","서울 노원·공릉(학교 주변)만","데모가 가장 쉬움. 데이터 밀도 높음"],["seoul","서울 전체",""],["korea","한국 전체",""],["global","글로벌 (구조는 글로벌, 데모는 서울)","팀 문서의 1→2→3단계 확장안"]],free:"의견"},
- {sec:"A. 기본 정체성",id:"lang",t:"앱 언어는?",en:"App language",type:"single",
+ {sec:"A. 기본 정체성 · Basics",id:"lang",t:"앱 언어는?",en:"App language",type:"single",
   opts:[["en","영어만","발표도 영어. 교환학생 타깃과 맞음"],["ko","한국어만",""],["both","영어 + 한국어 둘 다","strings.xml 두 벌. 작업량 조금 증가"]],free:"의견"},
- {sec:"A. 기본 정체성",id:"value",t:"'BEST ≠ POPULAR'(인기순이 아니라 진짜 좋은 곳)를 어떻게 지킬까요? (여러 개 선택 가능)",en:"How do we keep 'best is not popular'?",type:"multi",
+ {sec:"A. 기본 정체성 · Basics",id:"value",t:"'BEST ≠ POPULAR'(인기순이 아니라 진짜 좋은 곳)를 어떻게 지킬까요? (여러 개 선택 가능)",en:"How do we keep 'best is not popular'?",type:"multi",
   opts:[["hide","좋아요·저장 수는 작성자만 보기","팀 문서 안. 프로토타입에 반영됨"],["ratio","'본 사람 중 저장한 비율'로 정렬","(저장+1)/(조회+10). 탐색 탭에 반영됨"],["rare","'덜 알려진 곳' 표시·가산점","주변 스팟에 'Rarely seen' 표시"],["none","특별한 장치 없이 최신순만","가장 단순"]],free:"의견"},
 
- {sec:"B. 핵심 기능",id:"unit",t:"기록 한 건을 앱에서 뭐라고 부를까요?",en:"What do we call one recorded route?",type:"single",
+ {sec:"B. 핵심 기능 · Core features",id:"unit",t:"기록 한 건을 앱에서 뭐라고 부를까요?",en:"What do we call one recorded route?",type:"single",
   opts:[["log","Log","앱 이름 logit과 통일 (현재 프로토타입)"],["trip","Trip","팀 문서 용어"],["walk","Walk",""]],free:"의견"},
- {sec:"B. 핵심 기능",id:"record",t:"경로는 어떻게 기록할까요?",en:"How is a route recorded?",type:"single",
+ {sec:"B. 핵심 기능 · Core features",id:"record",t:"경로는 어떻게 기록할까요?",en:"How is a route recorded?",type:"single",
   opts:[["gps","시작/종료 버튼 사이에만 GPS 기록","집 위치 노출을 막기 쉬움 (현재 프로토타입)"],["gps_manual","GPS 기록 + 나중에 손으로 추가","기록 못 한 여행도 올릴 수 있음"],["auto","앱이 켜져 있으면 자동 기록","백그라운드 위치 권한·배터리 문제 큼"]],free:"의견"},
- {sec:"B. 핵심 기능",id:"main",t:"앱의 메인(홈) 화면은?",en:"What is the home screen?",type:"single",visual:true,
+ {sec:"B. 핵심 기능 · Core features",id:"main",t:"앱의 메인(홈) 화면은?",en:"What is the home screen?",type:"single",visual:true,
   why:"현재 프로토타입: 기록 안 할 때는 피드, 기록 중에는 트래킹 지도가 홈.",
   opts:[["current","기록 중이 아니면 피드, 기록 중이면 트래킹 화면","현재 프로토타입",shot("feed")+shot("track")],["map","항상 지도가 메인 (주변 스팟 + 아래 목록)","카카오맵·구글맵형",W.mapMain],["feedonly","항상 피드. 기록 중엔 상단 바만 표시","인스타그램형",W.feedAlways]],free:"의견"},
- {sec:"B. 핵심 기능",id:"card",t:"피드 카드 모양은?",en:"Feed card style",type:"single",visual:true,
+ {sec:"B. 핵심 기능 · Core features",id:"card",t:"피드 카드 모양은?",en:"Feed card style",type:"single",visual:true,
   opts:[["insta","인스타형: 지도 → 사진 넘기기","현재 프로토타입",shot("feed")],["strava","Strava형: 숫자(거리·시간) 강조 + 넓은 지도","운동 앱 느낌",W.strava],["timeline","타임라인형: 작은 지도 + 장소별 사진이 세로로","Polarsteps 느낌",W.timeline]],free:"의견"},
- {sec:"B. 핵심 기능",id:"spot",t:"기록 중에 장소(스팟)를 어떻게 등록할까요?",en:"Adding a spot while logging",type:"single",visual:true,
+ {sec:"B. 핵심 기능 · Core features",id:"spot",t:"기록 중에 장소(스팟)를 어떻게 등록할까요?",en:"Adding a spot while logging",type:"single",visual:true,
   opts:[["full","사진 + 이름(근처 장소 추천) + 종류 + 한 줄","현재 프로토타입",shot("addspot")],["quick","사진만 빠르게 찍고, 이름·메모는 기록 후 편집","걷는 중 입력 최소화",W.quick]],free:"의견"},
- {sec:"B. 핵심 기능",id:"nearby",t:"'내 주변 반경 안의 추천 스팟' 기능은?",en:"Nearby spots within a radius",type:"single",visual:true,
+ {sec:"B. 핵심 기능 · Core features",id:"nearby",t:"'내 주변 반경 안의 추천 스팟' 기능은?",en:"Nearby spots within a radius",type:"single",visual:true,
   why:"다른 사람들이 기록한 스팟을 반경(100 m ~ 3 km)으로 모아 보여 줍니다. 피드에서 묻히는 기록을 살리는 장치.",
   opts:[["explore","탐색 탭 안의 하위 기능","현재 프로토타입",shot("spots")],["main","별도 메인 탭으로 크게","발견 중심 앱이 됨",W.spotsMain],["drop","이번 학기엔 제외","범위 축소",W.noSpots]],free:"의견"},
- {sec:"B. 핵심 기능",id:"follow",t:"사용자 관계는?",en:"Follow model",type:"single",
+ {sec:"B. 핵심 기능 · Core features",id:"follow",t:"사용자 관계는?",en:"Follow model",type:"single",
   opts:[["follow","팔로우(한쪽) + 맞팔 구분","팀 문서 안. 맞팔만 실시간 위치 보기"],["friend","친구 요청 (서로 수락해야 연결)","카톡·페이스북형"],["none","관계 없음. 공개 피드만","가장 단순"]],free:"의견"},
- {sec:"B. 핵심 기능",id:"visibility",t:"끝난 로그는 누구에게 보이나요?",en:"Who can see a finished log?",type:"single",
+ {sec:"B. 핵심 기능 · Core features",id:"visibility",t:"끝난 로그는 누구에게 보이나요?",en:"Who can see a finished log?",type:"single",
   opts:[["public","모두에게 공개","발견·검색이 핵심 (팀 문서 안)"],["followers","팔로워에게만",""],["each","로그마다 선택","공개 / 팔로워 / 나만"]],free:"의견"},
- {sec:"B. 핵심 기능",id:"optional",t:"선택 기능 중 우선 넣고 싶은 것 (최대 3개)",en:"Pick up to 3 optional features",type:"multi",max:3,
+ {sec:"B. 핵심 기능 · Core features",id:"optional",t:"선택 기능 중 우선 넣고 싶은 것 (최대 3개)",en:"Pick up to 3 optional features",type:"multi",max:3,
   opts:[["live","실시간 보기","맞팔 친구가 기록 중인 경로를 실시간으로"],["trim","앞뒤 자르기","공개 전 출발·도착 구간 숨기기"],["follow_log","따라가기","남의 로그 스팟을 순서대로 안내"],["share","링크 공유","다른 앱으로 로그 공유"],["next","다음에 간 곳","이 장소 다음에 사람들이 간 곳 비율"],["mode","이동수단 자동 감지","걷기·버스·지하철 구분"],["stay","머문 곳 자동 감지","10분 이상 머물면 스팟 추가 알림"]],free:"의견"},
 
- {sec:"C. 기술·운영",id:"map",t:"지도 SDK는?",en:"Map SDK",type:"single",
+ {sec:"C. 기술 · Tech",id:"map",t:"지도 SDK는?",en:"Map SDK",type:"single",
   opts:[["google","Google Maps SDK","자료 많음. 키 발급에 결제 계정 필요"],["naver","Naver Map SDK","한국 지도 정확. 문서 한국어"],["kakao","Kakao Map SDK",""],["osm","OpenStreetMap (osmdroid)","무료·키 없음. 디자인 투박"]],free:"의견"},
- {sec:"C. 기술·운영",id:"backend",t:"서버(데이터 저장)는?",en:"Backend",type:"single",
+ {sec:"C. 기술 · Tech",id:"backend",t:"서버(데이터 저장)는?",en:"Backend",type:"single",
   opts:[["firebase","Firebase (Auth + Firestore)","팀 문서 안. 실시간 리스너 쉬움"],["supabase","Supabase (Postgres)","SQL·지리 검색 강함"],["local","서버 없이 기기 안(Room)만","소셜 기능 불가"]],free:"의견"},
- {sec:"C. 기술·운영",id:"photo",t:"사진 저장은?",en:"Photo storage",type:"single",
+ {sec:"C. 기술 · Tech",id:"photo",t:"사진 저장은?",en:"Photo storage",type:"single",
   opts:[["blaze","Firebase Storage (Blaze 요금제, 카드 등록)","무료 사용량 유지, 예산 알림 설정"],["compress","압축해서 DB에 직접","카드 등록 없음. 화질 낮음"],["device","기기에만 저장, 공유는 경로·텍스트만","가장 단순. 피드에 사진 못 띄움"]],free:"카드 등록 가능한 사람 / 의견"},
- {sec:"C. 기술·운영",id:"ui",t:"화면 구현 방식은?",en:"UI toolkit",type:"single",
+ {sec:"C. 기술 · Tech",id:"ui",t:"화면 구현 방식은?",en:"UI toolkit",type:"single",
   opts:[["xml","XML 레이아웃 + Activity/Fragment","수업 방식. 인터뷰 설명에 유리"],["compose","Jetpack Compose","최신 방식. 학습 필요"]],free:"의견"},
 
- {sec:"D. 팀 운영",id:"split",t:"역할 분담 방식은?",en:"How do we split the work?",type:"single",
+ {sec:"D. 팀 운영 · Team",id:"split",t:"역할 분담 방식은?",en:"How do we split the work?",type:"single",
   why:"인터뷰에서 팀원 코드도 개인별로 질문하므로, 어떤 방식이든 서로 코드 리뷰는 필수입니다.",
   opts:[["feature","기능별 세로 분담","① 기록·GPS·스팟 ② 지도·로그 상세·탐색 ③ 계정·피드·팔로우"],["layer","계층별 가로 분담","① 화면(UI) ② 데이터·서버 ③ GPS·지도"],["rotate","주차마다 기능 하나씩 같이","분담 없이 함께"]],free:"의견"},
- {sec:"D. 팀 운영",id:"mypart",t:"내가 맡고 싶은 파트는? (기능별 분담 기준)",en:"Which part do you want?",type:"single",
+ {sec:"D. 팀 운영 · Team",id:"mypart",t:"내가 맡고 싶은 파트는? (기능별 분담 기준)",en:"Which part do you want?",type:"single",
   opts:[["rec","기록·GPS·스팟 등록","Foreground Service, 위치, 카메라 (난이도 상)"],["map","지도·로그 상세·탐색(주변)","Maps SDK, 경로 그리기, 반경 검색"],["social","계정·피드·팔로우·프로필","Firebase Auth/Firestore, RecyclerView"],["any","아무거나 괜찮음",""]],free:"잘하는 것 / 피하고 싶은 것"},
- {sec:"D. 팀 운영",id:"tools",t:"협업 도구는? (여러 개 선택 가능)",en:"Collaboration tools",type:"multi",
+ {sec:"D. 팀 운영 · Team",id:"tools",t:"협업 도구는? (여러 개 선택 가능)",en:"Collaboration tools",type:"multi",
   opts:[["github","GitHub (커밋 이력 필수)","하루 몰아 커밋은 인정 안 됨"],["issues","GitHub Issues/Projects로 할 일 관리",""],["kakao","카카오톡 단톡",""],["notion","Notion",""],["discord","Discord",""]],free:"정기 회의 요일·시간 제안"},
- {sec:"D. 팀 운영",id:"demo",t:"데모용 로그를 미리 얼마나 기록할까요?",en:"Seed data for the demo",type:"single",
+ {sec:"D. 팀 운영 · Team",id:"demo",t:"데모용 로그를 미리 얼마나 기록할까요?",en:"Seed data for the demo",type:"single",
   why:"피드가 비어 있으면 컨셉이 안 보입니다.",
   opts:[["10","각자 3~4개 (총 10개)",""],["20","각자 6~7개 (총 20개)",""],["fake","직접 기록 대신 가짜 데이터 입력",""]],free:"어느 동네를 걸을지"},
 
- {sec:"E. 10/20 제안서 발표",id:"presenter",t:"발표(영어, 10분)는 누가 할까요?",en:"Who presents on Oct 20?",type:"single",
+ {sec:"E. 10/20 제안서 발표 · Proposal on Oct 20",id:"presenter",t:"발표(영어, 10분)는 누가 할까요?",en:"Who presents on Oct 20?",type:"single",
   opts:[["one","한 명이 전부","말하기 편한 사람"],["split","3명이 파트별로 나눠서",""],["joel","Joel 주발표 + 질의응답은 나눠서",""]],free:"발표자 추천 / 의견"},
- {sec:"E. 10/20 제안서 발표",id:"uiinslides",t:"제안서의 'Basic UI/UX'는 무엇으로?",en:"Basic UI/UX in the proposal",type:"single",
+ {sec:"E. 10/20 제안서 발표 · Proposal on Oct 20",id:"uiinslides",t:"제안서의 'Basic UI/UX'는 무엇으로?",en:"Basic UI/UX in the proposal",type:"single",
   opts:[["proto","이 프로토타입 화면 캡처","바로 사용 가능"],["figma","Figma로 새로 그림",""],["sketch","손그림","교수님이 허용함"]],free:"의견"},
- {sec:"E. 10/20 제안서 발표",id:"timeline",t:"일정안에 동의하나요?",en:"Timeline",type:"single",
+ {sec:"E. 10/20 제안서 발표 · Proposal on Oct 20",id:"timeline",t:"일정안에 동의하나요?",en:"Timeline",type:"single",
   why:"~11/3 기록·지도(혼자 쓰는 앱) → 11/9~13 WIP 점검 → ~11/30 계정·피드·팔로우 → 12/1~5 다듬기·영상 녹화 → 12/6 제출 → 12/8 인터뷰",
   opts:[["yes","동의",""],["change","수정 필요","아래에 수정안"]],free:"수정안 / 의견"},
- {sec:"F. 마무리",id:"etc",t:"그 밖에 꼭 하고 싶은 말",en:"Anything else?",type:"none",free:"자유롭게"},
+ {sec:"F. 마무리 · Wrap-up",id:"etc",t:"그 밖에 꼭 하고 싶은 말",en:"Anything else?",type:"none",free:"자유롭게"},
 ];
+// English for every option: "qid.value": [label, description]; and per-question "why"
+const EN={
+ "name.logit":["logit","log + it. Clearly about logging"],"name.Corners":["Corners","Working title from the team doc. Alleys and corners"],"name.Hereabouts":["Hereabouts","'Around here'. Feels like a nearby-recommendation app"],
+ "purpose.diary":["A personal diary of my trips and walks","Recording for yourself; sharing is secondary"],"purpose.social":["Log routes + share with friends (social)","Instagram for trips + Strava (team doc direction)"],"purpose.discover":["Find places near me from other people's logs","Discovery first; logging collects the data"],"purpose.all":["All of it: log + share + nearby","Biggest scope"],
+ "users.exchange":["Exchange students / foreign residents","Where Joel's problem statement started"],"users.kstudent":["Korean university students","Walks and food around campus"],"users.traveler_kr":["Domestic travelers","Weekend and day trips"],"users.traveler_world":["International travelers","Trips across cities and countries"],"users.local":["Neighborhood locals","People who post the places only locals know"],
+ "scope.campus":["Nowon / Gongneung only (around campus)","Easiest demo, dense data"],"scope.seoul":["All of Seoul",""],"scope.korea":["All of Korea",""],"scope.global":["Global (global structure, Seoul demo)","Team doc's stage 1→2→3 plan"],
+ "lang.en":["English only","Presentation is in English too; fits exchange students"],"lang.ko":["Korean only",""],"lang.both":["English + Korean","Two strings.xml files, a bit more work"],
+ "value.hide":["Only the author sees like/save counts","In the team doc; already in the prototype"],"value.ratio":["Rank by share of viewers who saved it","(saves+1)/(views+10). In the Explore tab"],"value.rare":["Mark and boost lesser-known places","'Rarely seen' label on nearby spots"],"value.none":["No special rule, newest first","Simplest"],
+ "unit.log":["Log","Matches the app name logit (current prototype)"],"unit.trip":["Trip","Term used in the team doc"],"unit.walk":["Walk",""],
+ "record.gps":["GPS only between Start and Finish","Keeps home location off the map (current prototype)"],"record.gps_manual":["GPS + add things manually later","Lets you post trips you didn't record"],"record.auto":["Record automatically whenever the app is on","Background location permission and battery issues"],
+ "main.current":["Feed when not logging, tracking screen while logging","Current prototype"],"main.map":["Always a map (nearby spots + list below)","Like Kakao Map / Google Maps"],"main.feedonly":["Always the feed; a top bar while logging","Like Instagram"],
+ "card.insta":["Instagram style: map, then swipe photos","Current prototype"],"card.strava":["Strava style: big numbers + wide map","Feels like a workout app"],"card.timeline":["Timeline style: small map + photos per place, vertical","Like Polarsteps"],
+ "spot.full":["Photo + name (nearby suggestions) + type + one line","Current prototype"],"spot.quick":["Quick photo only; name and note after the log","Less typing while walking"],
+ "nearby.explore":["A sub-tab inside Explore","Current prototype"],"nearby.main":["Its own main tab","Makes it a discovery app"],"nearby.drop":["Leave it out this semester","Smaller scope"],
+ "follow.follow":["One-way follow + mutuals","Team doc. Only mutuals see live location"],"follow.friend":["Friend requests (both must accept)","Like KakaoTalk / Facebook"],"follow.none":["No relationships, public feed only","Simplest"],
+ "visibility.public":["Everyone","Discovery and search are the core (team doc)"],"visibility.followers":["Followers only",""],"visibility.each":["Choose per log","Public / followers / only me"],
+ "optional.live":["Live view","Mutuals watch your route while you log"],"optional.trim":["Trim start and end","Hide the start/finish before publishing"],"optional.follow_log":["Follow a log","Guide through someone's spots in order"],"optional.share":["Share link","Share a log to other apps"],"optional.next":["Where people went next","% of people who went to each next place"],"optional.mode":["Auto-detect transport","Walk / bus / subway"],"optional.stay":["Auto-detect stays","Prompt to add a spot after 10+ min"],
+ "map.google":["Google Maps SDK","Lots of docs. Key needs a billing account"],"map.naver":["Naver Map SDK","Accurate Korean maps, Korean docs"],"map.kakao":["Kakao Map SDK",""],"map.osm":["OpenStreetMap (osmdroid)","Free, no key. Plainer look"],
+ "backend.firebase":["Firebase (Auth + Firestore)","Team doc. Easy realtime listeners"],"backend.supabase":["Supabase (Postgres)","Strong SQL and geo queries"],"backend.local":["No server, on-device only (Room)","No social features"],
+ "photo.blaze":["Firebase Storage (Blaze plan, card needed)","Free tier still applies; set a budget alert"],"photo.compress":["Compress and store in the database","No card. Lower quality"],"photo.device":["Keep on device; share route + text only","Simplest. No photos in the feed"],
+ "ui.xml":["XML layouts + Activity/Fragment","What the class uses. Easier to explain in the interview"],"ui.compose":["Jetpack Compose","Modern, needs learning"],
+ "split.feature":["Split by feature (vertical)","① logging/GPS/spots ② map/log detail/explore ③ account/feed/follow"],"split.layer":["Split by layer (horizontal)","① UI ② data/server ③ GPS/map"],"split.rotate":["Build one feature together each week","No fixed split"],
+ "mypart.rec":["Logging, GPS, adding spots","Foreground Service, location, camera (hardest)"],"mypart.map":["Map, log detail, Explore/nearby","Maps SDK, drawing routes, radius search"],"mypart.social":["Account, feed, follow, profile","Firebase Auth/Firestore, RecyclerView"],"mypart.any":["Anything is fine",""],
+ "tools.github":["GitHub (commit history required)","One-day dump commits don't count"],"tools.issues":["GitHub Issues/Projects for tasks",""],"tools.kakao":["KakaoTalk group chat",""],"tools.notion":["Notion",""],"tools.discord":["Discord",""],
+ "demo.10":["3–4 each (10 total)",""],"demo.20":["6–7 each (20 total)",""],"demo.fake":["Enter fake data instead of walking",""],
+ "presenter.one":["One person presents everything","Whoever is most comfortable"],"presenter.split":["All 3 split by part",""],"presenter.joel":["Joel leads, Q&A shared",""],
+ "uiinslides.proto":["Screenshots of this prototype","Ready to use"],"uiinslides.figma":["Redraw in Figma",""],"uiinslides.sketch":["Hand sketches","Allowed by the professor"],
+ "timeline.yes":["Agree",""],"timeline.change":["Needs changes","Write your version below"],
+};
+const WHY_EN={name:"Becomes the first slide and the GitHub repo name. The prototype currently says 'logit'.",purpose:"This sets feature and screen priorities. The team doc and the prototype currently mix these.",scope:"Decides where we collect demo data, and which map and language we use.",main:"Current prototype: feed when not logging, tracking map while logging.",nearby:"Shows spots others logged within a radius (100 m – 3 km). Keeps posts from getting buried in the feed.",split:"The interview asks each member about teammates' code too, so code review is a must either way.",demo:"If the feed is empty, the concept doesn't show.",timeline:"~11/3 logging + map (single-user app) → 11/9–13 WIP check → ~11/30 account, feed, follow → 12/1–5 polish, record video → 12/6 submit → 12/8 interview"};
+const FREE_EN={who:"Not listed? Type your name",name:"Other name ideas / comments",purpose:"Describe our app in one sentence",users:"The single most important group, and why",photo:"Who can register a card? / comments",mypart:"What you're good at / want to avoid",tools:"Suggested weekly meeting day and time",demo:"Which neighborhoods to walk",presenter:"Who should present? / comments",timeline:"Your changes / comments",etc:"Anything"};
+const en=(q,v,k)=>((EN[q.id+"."+v]||[])[k]||"");
 let A={};try{A=JSON.parse(localStorage.getItem("logit-decide")||"{}")}catch(e){}
 let i=0;try{i=+localStorage.getItem("logit-decide-i")||0}catch(e){}
 const save=()=>{try{localStorage.setItem("logit-decide",JSON.stringify(A));localStorage.setItem("logit-decide-i",i)}catch(e){}};
@@ -159,19 +193,19 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800)}
 function render(){
- $("#pg").style.width=(i/Q.length*100)+"%";$("#cnt").textContent=i<Q.length?`Q${i+1} / ${Q.length}`:"완료";
+ $("#pg").style.width=(i/Q.length*100)+"%";$("#cnt").textContent=i<Q.length?`Q${i+1} / ${Q.length}`:"완료 · Done";
  $("#prev").disabled=i===0;
  if(i>=Q.length)return renderSum();
  const q=Q[i],a=A[q.id]||{sel:[],free:""};
- $("#next").textContent=i===Q.length-1?"검토하기":"다음";
- $("#card").innerHTML=`<div class="sec">${q.sec}</div><h1>Q${i+1}. ${q.t}</h1><div class="en">${q.en}</div>
- ${q.why?`<div class="why">${q.why}</div>`:""}
+ $("#next").textContent=i===Q.length-1?"검토하기 · Review":"다음 · Next";
+ $("#card").innerHTML=`<div class="sec">${q.sec}</div><h1>Q${i+1}. ${q.t}</h1><div class="en" style="font-size:16px;font-weight:600;color:#4A4D55">${q.en}</div>
+ ${q.why?`<div class="why">${q.why}${WHY_EN[q.id]?`<div class="en" style="margin-top:4px">${WHY_EN[q.id]}</div>`:""}</div>`:""}
  ${q.opts?`<div class="opts ${q.visual?"vis":""} ${q.type==="multi"?"multi":""}">${q.opts.map(([v,l,d,pv])=>q.visual?
-  `<button class="opt vcard ${a.sel.includes(v)?"on":""}" data-v="${v}"><div class="pv">${pv||""}</div><div class="lb"><span class="mark"></span><div><b>${l}${d==="현재 프로토타입"?'<span class="badge">현재</span>':""}</b>${d&&d!=="현재 프로토타입"?`<small>${d}</small>`:""}</div></div></button>`
-  :`<button class="opt ${a.sel.includes(v)?"on":""}" data-v="${v}"><span class="mark"></span><div><b>${l}${d==="현재 프로토타입"||/\(현재 프로토타입\)/.test(d)?'<span class="badge">현재</span>':""}</b>${d?`<small>${d.replace(" (현재 프로토타입)","")}</small>`:""}</div></button>`).join("")}</div>`:""}
- ${q.type==="multi"?`<div class="hint">${q.max?`최대 ${q.max}개`:"여러 개 선택 가능"}</div>`:""}
- ${q.visual?`<div class="hint">현재 화면을 직접 눌러 보려면 <a href="${PROTO}" target="_blank">프로토타입 열기 ↗</a></div>`:""}
- <div class="free"><label>${q.free||"직접 입력 / 의견"}</label><textarea id="free" rows="3" placeholder="선택지 외 의견, 이유, 다른 안을 자유롭게">${esc(a.free)}</textarea></div>`;
+  `<button class="opt vcard ${a.sel.includes(v)?"on":""}" data-v="${v}"><div class="pv">${pv||""}</div><div class="lb"><span class="mark"></span><div><b>${l}${d==="현재 프로토타입"?'<span class="badge">현재 · Current</span>':""}</b><span class="enl">${en(q,v,0)}</span>${d&&d!=="현재 프로토타입"?`<small>${d}</small><small class="ens">${en(q,v,1)}</small>`:""}</div></div></button>`
+  :`<button class="opt ${a.sel.includes(v)?"on":""}" data-v="${v}"><span class="mark"></span><div><b>${l}${d==="현재 프로토타입"||/\(현재 프로토타입\)/.test(d)?'<span class="badge">현재 · Current</span>':""}</b>${en(q,v,0)&&en(q,v,0)!==l?`<span class="enl">${en(q,v,0)}</span>`:""}${d?`<small>${d.replace(" (현재 프로토타입)","")}</small>${en(q,v,1)?`<small class="ens">${en(q,v,1).replace(" (current prototype)","")}</small>`:""}`:""}</div></button>`).join("")}</div>`:""}
+ ${q.type==="multi"?`<div class="hint">${q.max?`최대 ${q.max}개 · Up to ${q.max}`:"여러 개 선택 가능 · Pick as many as you like"}</div>`:""}
+ ${q.visual?`<div class="hint">현재 화면을 직접 눌러 보려면 · To try the current screens: <a href="${PROTO}" target="_blank">프로토타입 열기 · Open prototype ↗</a></div>`:""}
+ <div class="free"><label>${q.free||"직접 입력 / 의견"} <span class="en" style="font-weight:500">· ${FREE_EN[q.id]||"Your own answer / comments"}</span></label><textarea id="free" rows="3" placeholder="선택지 외 의견, 이유, 다른 안 · Other ideas, reasons, alternatives">${esc(a.free)}</textarea></div>`;
  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const v=b.dataset.v;let s=a.sel;
   if(q.type==="single")s=s.includes(v)?[]:[v];else{if(s.includes(v))s=s.filter(x=>x!==v);else{if(q.max&&s.length>=q.max){toast(`최대 ${q.max}개까지 고를 수 있어요`);return}s=[...s,v]}}
   A[q.id]={...a,sel:s,free:$("#free").value};save();render()});
@@ -179,14 +213,14 @@ function render(){
  window.scrollTo(0,0)}
 function label(q,v){const o=(q.opts||[]).find(x=>x[0]===v);return o?o[1]:v}
 function text(){const who=(A.who&&(A.who.sel[0]||A.who.free))||"이름 없음";
- return `[logit 의사결정 답변] ${who}\n`+Q.map((q,k)=>{const a=A[q.id]||{sel:[],free:""};return `Q${k+1}. ${q.t}\n- 선택: ${a.sel.map(v=>label(q,v)).join(", ")||"(없음)"}${a.free?`\n- 의견: ${a.free.trim()}`:""}`}).join("\n\n")}
+ return `[logit 의사결정 답변] ${who}\n`+Q.map((q,k)=>{const a=A[q.id]||{sel:[],free:""};return `Q${k+1}. ${q.t} / ${q.en}\n- 선택 (choice): ${a.sel.map(v=>label(q,v)+(en(q,v,0)&&en(q,v,0)!==label(q,v)?" / "+en(q,v,0):"")).join(", ")||"(none)"}${a.free?`\n- 의견 (comment): ${a.free.trim()}`:""}`}).join("\n\n")}
 function renderSum(){
- $("#next").textContent="제출 (GitHub 이슈)";
+ $("#next").textContent="제출 · Submit (GitHub issue)";
  const miss=Q.filter(q=>q.opts&&!(A[q.id]&&(A[q.id].sel.length||A[q.id].free))).map(q=>"Q"+(Q.indexOf(q)+1));
- $("#card").innerHTML=`<div class="sec">검토</div><h1>답변을 확인하고 제출해 주세요</h1><div class="en">Review and submit</div>
- ${miss.length?`<div class="why">아직 답하지 않은 질문: ${miss.join(", ")} (비워 둬도 제출은 됩니다)</div>`:""}
- <div class="sum">${Q.map((q,k)=>{const a=A[q.id]||{sel:[],free:""};return `<div data-k="${k}" style="cursor:pointer"><b>Q${k+1}. ${q.t}</b>${esc(a.sel.map(v=>label(q,v)).join(", "))||'<span style="color:#B0B3B8">(선택 없음)</span>'}${a.free?`<div style="color:#3C3F46;margin-top:4px">“${esc(a.free)}”</div>`:""}</div>`}).join("")}</div>
- <div class="why" style="margin-top:16px"><b>제출 방법</b><br>① <b>제출 (GitHub 이슈)</b>: 답변이 자동 복사되고 GitHub 이슈 작성 창이 열립니다. 본문이 비어 있으면 붙여넣기(Ctrl/⌘+V) 후 'Submit new issue'.<br>② GitHub 계정이 없으면 <a href="#" id="copy">답변 복사</a> 후 단톡방에 붙여 넣어 주세요.</div>`;
+ $("#card").innerHTML=`<div class="sec">검토</div><h1>답변을 확인하고 제출해 주세요</h1><div class="en" style="font-size:16px;font-weight:600;color:#4A4D55">Check your answers and submit</div>
+ ${miss.length?`<div class="why">아직 답하지 않은 질문 · Unanswered: ${miss.join(", ")} (비워 둬도 제출됩니다 · you can still submit)</div>`:""}
+ <div class="sum">${Q.map((q,k)=>{const a=A[q.id]||{sel:[],free:""};return `<div data-k="${k}" style="cursor:pointer"><b>Q${k+1}. ${q.t} · ${q.en}</b>${esc(a.sel.map(v=>label(q,v)).join(", "))||'<span style="color:#B0B3B8">(선택 없음)</span>'}${a.free?`<div style="color:#3C3F46;margin-top:4px">“${esc(a.free)}”</div>`:""}</div>`}).join("")}</div>
+ <div class="why" style="margin-top:16px"><b>제출 방법 · How to submit</b><br>① <b>제출 · Submit</b>: 답변이 복사되고 GitHub 이슈 창이 열립니다. 본문이 비어 있으면 붙여넣기(Ctrl/⌘+V) 후 'Submit new issue'.<div class="en">Your answers are copied and a GitHub issue opens. If the body is empty, paste (Ctrl/⌘+V) and click 'Submit new issue'.</div>② GitHub 계정이 없으면 <a href="#" id="copy">답변 복사 · Copy answers</a> 후 단톡방에 붙여 넣어 주세요.<div class="en">No GitHub account? Copy your answers and paste them in the group chat.</div></div>`;
  document.querySelectorAll(".sum div[data-k]").forEach(d=>d.onclick=()=>{i=+d.dataset.k;save();render()});
  $("#copy").onclick=e=>{e.preventDefault();copy()};window.scrollTo(0,0)}
 async function copy(){const t=text();try{await navigator.clipboard.writeText(t);toast("답변을 복사했어요")}catch(e){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();toast("답변을 복사했어요")}}
