@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>logit · 팀 의사결정</title>
+<style>
+:root{--acc:#F2541B;--ink:#16181D;--sub:#6E727A;--line:#E3E4E7;--bg:#F6F6F7}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.5}
+button,input,textarea{font:inherit;color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 120px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.brand{font-weight:800;font-size:22px;letter-spacing:-.8px}.brand span{color:var(--acc)}
+.prog{flex:1;height:6px;background:#E6E7EA;border-radius:3px;overflow:hidden;max-width:360px}.prog i{display:block;height:100%;background:var(--acc);transition:width .25s}
+.cnt{font-size:13px;color:var(--sub);white-space:nowrap}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 20px}
+.sec{font-size:12.5px;font-weight:700;color:var(--acc);margin-bottom:6px}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.4px;line-height:1.35}
+.en{color:var(--sub);font-size:13.5px}
+.why{margin:12px 0 4px;padding:10px 12px;background:#F7F7F8;border-radius:10px;font-size:13.5px;color:#3C3F46}
+.opts{display:grid;gap:8px;margin-top:16px}
+.opts.vis{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1.5px solid var(--line);border-radius:12px;padding:12px;background:#fff;cursor:pointer}
+.opt:hover{border-color:#C9CBD0}
+.opt.on{border-color:var(--acc);background:#FFF6F2}
+.mark{width:20px;height:20px;border-radius:50%;border:1.5px solid #BFC2C7;flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center}
+.multi .mark{border-radius:5px}
+.on .mark{background:var(--acc);border-color:var(--acc)}
+.on .mark:after{content:"";width:8px;height:8px;border-radius:50%;background:#fff}
+.multi .on .mark:after{border-radius:1px;width:9px;height:5px;background:none;border:2px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.opt b{display:block;font-weight:600}
+.opt small{display:block;color:var(--sub);font-size:12.5px;margin-top:2px}
+.opt.vcard{flex-direction:column;padding:10px}
+.opt.vcard .pv{width:100%;height:300px;border-radius:8px;overflow:hidden;background:#EEE;display:flex;align-items:center;justify-content:center}
+.opt.vcard .pv img{height:100%;width:auto;display:block}
+.opt.vcard .lb{display:flex;gap:8px;align-items:flex-start;width:100%}
+.badge{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--ink);border-radius:5px;padding:1px 6px;margin-left:4px;vertical-align:1px}
+.free{margin-top:14px}
+.free label{display:block;font-size:13px;font-weight:600;color:#3C3F46;margin-bottom:6px}
+.free textarea,.free input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;outline:0;resize:vertical}
+.free textarea:focus,.free input:focus{border-color:var(--acc)}
+.nav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);border-top:1px solid var(--line);padding:12px 16px}
+.nav .in{max-width:760px;margin:0 auto;display:flex;gap:10px}
+.btn{height:46px;border-radius:12px;border:0;padding:0 18px;font-weight:700;font-size:15px;cursor:pointer}
+.btn.p{background:var(--acc);color:#fff;flex:1}
+.btn.g{background:#ECEDF0}
+.btn:disabled{opacity:.4;cursor:default}
+.hint{font-size:12.5px;color:var(--sub);margin-top:10px}
+/* wireframes */
+.wf{width:150px;height:290px;border:2px solid #2B2D33;border-radius:18px;background:#fff;padding:8px;display:flex;flex-direction:column;gap:5px;font-size:9px;color:#555}
+.wf .b{background:#E4E5E8;border-radius:4px;display:flex;align-items:center;justify-content:center;text-align:center;padding:2px}
+.wf .m{background:#DCE8D8}.wf .o{background:#F7C9B5}.wf .t{height:16px;background:#2B2D33;color:#fff;border-radius:4px;display:flex;align-items:center;justify-content:space-around;font-size:8px}
+.sum{display:grid;gap:10px;margin-top:14px}
+.sum div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px}
+.sum b{display:block;font-size:12.5px;color:var(--sub);font-weight:600}
+.pill{display:inline-block;padding:6px 12px;border-radius:999px;border:1.5px solid var(--line);margin:4px 6px 0 0;cursor:pointer;background:#fff}
+.pill.on{border-color:var(--acc);background:#FFF6F2}
+a{color:var(--acc)}
+.done{text-align:center;padding:30px 10px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;transition:.2s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><div class="brand">logit<span>.</span> <span style="color:#6E727A;font-size:14px;font-weight:600;letter-spacing:0">팀 의사결정</span></div><div class="prog"><i id="pg"></i></div><div class="cnt" id="cnt"></div></div>
+  <div class="card" id="card"></div>
+</div>
+<div class="nav"><div class="in"><button class="btn g" id="prev">이전</button><button class="btn p" id="next">다음</button></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const PROTO="../";
+const shot=s=>`<img src="shots/${s}.jpg" alt="">`;
+const wf=(rows)=>`<div class="wf">${rows}</div>`;
+const W={
+ mapMain:wf(`<div class="b" style="height:18px">검색</div><div class="b m" style="flex:1">지도 + 주변 핀</div><div class="b" style="height:90px">아래 목록 시트<br>(주변 추천)</div><div class="t">지도 · 피드 · 기록 · 나</div>`),
+ feedAlways:wf(`<div class="b" style="height:14px;background:#E5342B;color:#fff">● 기록 중 0:40 (상단 바만)</div><div class="b" style="height:120px">피드 카드</div><div class="b" style="height:80px">피드 카드</div><div class="t">홈 · 탐색 · 기록 · 나</div>`),
+ strava:wf(`<div class="b" style="height:16px">이름 · 날짜</div><div class="b" style="height:16px">제목</div><div class="b o" style="height:26px">거리 | 시간 | 스팟 (숫자 강조)</div><div class="b m" style="height:110px">넓은 지도</div><div class="b" style="height:30px">사진 작은 줄</div><div class="t">♡ 💬 ↗</div>`),
+ timeline:wf(`<div class="b" style="height:16px">이름 · 제목</div><div class="b m" style="height:60px">작은 지도</div><div class="b" style="height:34px">① 사진 + 장소</div><div class="b" style="height:34px">② 사진 + 장소</div><div class="b" style="height:34px">③ 사진 + 장소</div>`),
+ quick:wf(`<div class="b m" style="flex:1">지도 (기록 중)</div><div class="b o" style="height:40px">📷 버튼 한 번 → 사진만 저장</div><div class="b" style="height:40px">이름·메모는 기록 끝난 뒤 편집</div>`),
+ noSpots:wf(`<div class="b" style="height:18px">검색 (아이디·태그)</div><div class="b" style="height:18px">태그 칩</div><div class="b" style="flex:1">로그 목록만<br>(반경 기능 없음)</div><div class="t">홈 · 탐색 · 기록 · 나</div>`),
+ spotsMain:wf(`<div class="b m" style="flex:1">지도 + 반경 원</div><div class="b" style="height:100px">주변 스팟 목록<br>(메인 탭)</div><div class="t">주변 · 홈 · 기록 · 나</div>`),
+};
+// type: single | multi ; opts: [value, label, desc, preview?]
+const Q=[
+ {sec:"0. 응답자",id:"who",t:"응답자 이름을 알려 주세요.",en:"Who is answering?",type:"single",opts:[["Joel","Joel"],["김형도","김형도"],["권도훈","권도훈"]],free:"목록에 없으면 이름 입력"},
+
+ {sec:"A. 기본 정체성",id:"name",t:"앱 이름을 무엇으로 할까요?",en:"What should we call the app?",type:"single",
+  why:"제안서 첫 장과 GitHub 저장소 이름이 됩니다. 프로토타입은 지금 'logit'으로 되어 있습니다.",
+  opts:[["logit","logit","log + it. 기록(log) 중심이라는 게 바로 보임"],["Corners","Corners","팀 문서의 가제. 골목·모퉁이 느낌"],["Hereabouts","Hereabouts","'이 근처'. 주변 추천 느낌이 강함"]],free:"다른 이름 제안 / 의견"},
+ {sec:"A. 기본 정체성",id:"purpose",t:"이 앱은 무엇을 하는 앱인가요? (가장 가까운 하나)",en:"In one line, what is this app for?",type:"single",
+  why:"이게 정해져야 기능·화면 우선순위가 정해집니다. 지금 팀 문서와 프로토타입 사이에 이 부분이 섞여 있습니다.",
+  opts:[["diary","내 여행·산책 경로를 기록하는 개인 일기","혼자 쓰는 기록이 중심. 공유는 부가"],["social","경로 기록 + 친구에게 공유하는 SNS","여행판 인스타그램 + Strava (팀 문서 방향)"],["discover","남들이 기록한 데이터로 '내 주변 갈 곳'을 찾는 앱","추천·발견이 중심. 기록은 데이터를 모으는 수단"],["all","기록 + 공유 + 주변 추천 모두","범위가 가장 큼"]],free:"우리 앱을 한 문장으로 쓴다면?"},
+ {sec:"A. 기본 정체성",id:"users",t:"주 사용자는 누구인가요? (여러 개 선택 가능)",en:"Who are the main users? (multiple)",type:"multi",
+  opts:[["exchange","교환학생·외국인 거주자","Joel의 문제 정의에서 출발한 그룹"],["kstudent","한국 대학생","캠퍼스 주변 산책·맛집"],["traveler_kr","국내 여행자","주말 여행·당일치기"],["traveler_world","해외 여행자","나라·도시 단위 여행"],["local","동네 주민","'현지인만 아는 곳'을 올려 주는 쪽"]],free:"가장 우선인 한 그룹과 그 이유"},
+ {sec:"A. 기본 정체성",id:"scope",t:"서비스 범위는 어디까지로 할까요?",en:"Global service or Seoul only?",type:"single",
+  why:"데모 데이터를 어디서 모을지, 지도·언어를 무엇으로 할지가 여기서 갈립니다.",
+  opts:[["campus","서울 노원·공릉(학교 주변)만","데모가 가장 쉬움. 데이터 밀도 높음"],["seoul","서울 전체",""],["korea","한국 전체",""],["global","글로벌 (구조는 글로벌, 데모는 서울)","팀 문서의 1→2→3단계 확장안"]],free:"의견"},
+ {sec:"A. 기본 정체성",id:"lang",t:"앱 언어는?",en:"App language",type:"single",
+  opts:[["en","영어만","발표도 영어. 교환학생 타깃과 맞음"],["ko","한국어만",""],["both","영어 + 한국어 둘 다","strings.xml 두 벌. 작업량 조금 증가"]],free:"의견"},
+ {sec:"A. 기본 정체성",id:"value",t:"'BEST ≠ POPULAR'(인기순이 아니라 진짜 좋은 곳)를 어떻게 지킬까요? (여러 개 선택 가능)",en:"How do we keep 'best is not popular'?",type:"multi",
+  opts:[["hide","좋아요·저장 수는 작성자만 보기","팀 문서 안. 프로토타입에 반영됨"],["ratio","'본 사람 중 저장한 비율'로 정렬","(저장+1)/(조회+10). 탐색 탭에 반영됨"],["rare","'덜 알려진 곳' 표시·가산점","주변 스팟에 'Rarely seen' 표시"],["none","특별한 장치 없이 최신순만","가장 단순"]],free:"의견"},
+
+ {sec:"B. 핵심 기능",id:"unit",t:"기록 한 건을 앱에서 뭐라고 부를까요?",en:"What do we call one recorded route?",type:"single",
+  opts:[["log","Log","앱 이름 logit과 통일 (현재 프로토타입)"],["trip","Trip","팀 문서 용어"],["walk","Walk",""]],free:"의견"},
+ {sec:"B. 핵심 기능",id:"record",t:"경로는 어떻게 기록할까요?",en:"How is a route recorded?",type:"single",
+  opts:[["gps","시작/종료 버튼 사이에만 GPS 기록","집 위치 노출을 막기 쉬움 (현재 프로토타입)"],["gps_manual","GPS 기록 + 나중에 손으로 추가","기록 못 한 여행도 올릴 수 있음"],["auto","앱이 켜져 있으면 자동 기록","백그라운드 위치 권한·배터리 문제 큼"]],free:"의견"},
+ {sec:"B. 핵심 기능",id:"main",t:"앱의 메인(홈) 화면은?",en:"What is the home screen?",type:"single",visual:true,
+  why:"현재 프로토타입: 기록 안 할 때는 피드, 기록 중에는 트래킹 지도가 홈.",
+  opts:[["current","기록 중이 아니면 피드, 기록 중이면 트래킹 화면","현재 프로토타입",shot("feed")+shot("track")],["map","항상 지도가 메인 (주변 스팟 + 아래 목록)","카카오맵·구글맵형",W.mapMain],["feedonly","항상 피드. 기록 중엔 상단 바만 표시","인스타그램형",W.feedAlways]],free:"의견"},
+ {sec:"B. 핵심 기능",id:"card",t:"피드 카드 모양은?",en:"Feed card style",type:"single",visual:true,
+  opts:[["insta","인스타형: 지도 → 사진 넘기기","현재 프로토타입",shot("feed")],["strava","Strava형: 숫자(거리·시간) 강조 + 넓은 지도","운동 앱 느낌",W.strava],["timeline","타임라인형: 작은 지도 + 장소별 사진이 세로로","Polarsteps 느낌",W.timeline]],free:"의견"},
+ {sec:"B. 핵심 기능",id:"spot",t:"기록 중에 장소(스팟)를 어떻게 등록할까요?",en:"Adding a spot while logging",type:"single",visual:true,
+  opts:[["full","사진 + 이름(근처 장소 추천) + 종류 + 한 줄","현재 프로토타입",shot("addspot")],["quick","사진만 빠르게 찍고, 이름·메모는 기록 후 편집","걷는 중 입력 최소화",W.quick]],free:"의견"},
+ {sec:"B. 핵심 기능",id:"nearby",t:"'내 주변 반경 안의 추천 스팟' 기능은?",en:"Nearby spots within a radius",type:"single",visual:true,
+  why:"다른 사람들이 기록한 스팟을 반경(100 m ~ 3 km)으로 모아 보여 줍니다. 피드에서 묻히는 기록을 살리는 장치.",
+  opts:[["explore","탐색 탭 안의 하위 기능","현재 프로토타입",shot("spots")],["main","별도 메인 탭으로 크게","발견 중심 앱이 됨",W.spotsMain],["drop","이번 학기엔 제외","범위 축소",W.noSpots]],free:"의견"},
+ {sec:"B. 핵심 기능",id:"follow",t:"사용자 관계는?",en:"Follow model",type:"single",
+  opts:[["follow","팔로우(한쪽) + 맞팔 구분","팀 문서 안. 맞팔만 실시간 위치 보기"],["friend","친구 요청 (서로 수락해야 연결)","카톡·페이스북형"],["none","관계 없음. 공개 피드만","가장 단순"]],free:"의견"},
+ {sec:"B. 핵심 기능",id:"visibility",t:"끝난 로그는 누구에게 보이나요?",en:"Who can see a finished log?",type:"single",
+  opts:[["public","모두에게 공개","발견·검색이 핵심 (팀 문서 안)"],["followers","팔로워에게만",""],["each","로그마다 선택","공개 / 팔로워 / 나만"]],free:"의견"},
+ {sec:"B. 핵심 기능",id:"optional",t:"선택 기능 중 우선 넣고 싶은 것 (최대 3개)",en:"Pick up to 3 optional features",type:"multi",max:3,
+  opts:[["live","실시간 보기","맞팔 친구가 기록 중인 경로를 실시간으로"],["trim","앞뒤 자르기","공개 전 출발·도착 구간 숨기기"],["follow_log","따라가기","남의 로그 스팟을 순서대로 안내"],["share","링크 공유","다른 앱으로 로그 공유"],["next","다음에 간 곳","이 장소 다음에 사람들이 간 곳 비율"],["mode","이동수단 자동 감지","걷기·버스·지하철 구분"],["stay","머문 곳 자동 감지","10분 이상 머물면 스팟 추가 알림"]],free:"의견"},
+
+ {sec:"C. 기술·운영",id:"map",t:"지도 SDK는?",en:"Map SDK",type:"single",
+  opts:[["google","Google Maps SDK","자료 많음. 키 발급에 결제 계정 필요"],["naver","Naver Map SDK","한국 지도 정확. 문서 한국어"],["kakao","Kakao Map SDK",""],["osm","OpenStreetMap (osmdroid)","무료·키 없음. 디자인 투박"]],free:"의견"},
+ {sec:"C. 기술·운영",id:"backend",t:"서버(데이터 저장)는?",en:"Backend",type:"single",
+  opts:[["firebase","Firebase (Auth + Firestore)","팀 문서 안. 실시간 리스너 쉬움"],["supabase","Supabase (Postgres)","SQL·지리 검색 강함"],["local","서버 없이 기기 안(Room)만","소셜 기능 불가"]],free:"의견"},
+ {sec:"C. 기술·운영",id:"photo",t:"사진 저장은?",en:"Photo storage",type:"single",
+  opts:[["blaze","Firebase Storage (Blaze 요금제, 카드 등록)","무료 사용량 유지, 예산 알림 설정"],["compress","압축해서 DB에 직접","카드 등록 없음. 화질 낮음"],["device","기기에만 저장, 공유는 경로·텍스트만","가장 단순. 피드에 사진 못 띄움"]],free:"카드 등록 가능한 사람 / 의견"},
+ {sec:"C. 기술·운영",id:"ui",t:"화면 구현 방식은?",en:"UI toolkit",type:"single",
+  opts:[["xml","XML 레이아웃 + Activity/Fragment","수업 방식. 인터뷰 설명에 유리"],["compose","Jetpack Compose","최신 방식. 학습 필요"]],free:"의견"},
+
+ {sec:"D. 팀 운영",id:"split",t:"역할 분담 방식은?",en:"How do we split the work?",type:"single",
+  why:"인터뷰에서 팀원 코드도 개인별로 질문하므로, 어떤 방식이든 서로 코드 리뷰는 필수입니다.",
+  opts:[["feature","기능별 세로 분담","① 기록·GPS·스팟 ② 지도·로그 상세·탐색 ③ 계정·피드·팔로우"],["layer","계층별 가로 분담","① 화면(UI) ② 데이터·서버 ③ GPS·지도"],["rotate","주차마다 기능 하나씩 같이","분담 없이 함께"]],free:"의견"},
+ {sec:"D. 팀 운영",id:"mypart",t:"내가 맡고 싶은 파트는? (기능별 분담 기준)",en:"Which part do you want?",type:"single",
+  opts:[["rec","기록·GPS·스팟 등록","Foreground Service, 위치, 카메라 (난이도 상)"],["map","지도·로그 상세·탐색(주변)","Maps SDK, 경로 그리기, 반경 검색"],["social","계정·피드·팔로우·프로필","Firebase Auth/Firestore, RecyclerView"],["any","아무거나 괜찮음",""]],free:"잘하는 것 / 피하고 싶은 것"},
+ {sec:"D. 팀 운영",id:"tools",t:"협업 도구는? (여러 개 선택 가능)",en:"Collaboration tools",type:"multi",
+  opts:[["github","GitHub (커밋 이력 필수)","하루 몰아 커밋은 인정 안 됨"],["issues","GitHub Issues/Projects로 할 일 관리",""],["kakao","카카오톡 단톡",""],["notion","Notion",""],["discord","Discord",""]],free:"정기 회의 요일·시간 제안"},
+ {sec:"D. 팀 운영",id:"demo",t:"데모용 로그를 미리 얼마나 기록할까요?",en:"Seed data for the demo",type:"single",
+  why:"피드가 비어 있으면 컨셉이 안 보입니다.",
+  opts:[["10","각자 3~4개 (총 10개)",""],["20","각자 6~7개 (총 20개)",""],["fake","직접 기록 대신 가짜 데이터 입력",""]],free:"어느 동네를 걸을지"},
+
+ {sec:"E. 10/20 제안서 발표",id:"presenter",t:"발표(영어, 10분)는 누가 할까요?",en:"Who presents on Oct 20?",type:"single",
+  opts:[["one","한 명이 전부","말하기 편한 사람"],["split","3명이 파트별로 나눠서",""],["joel","Joel 주발표 + 질의응답은 나눠서",""]],free:"발표자 추천 / 의견"},
+ {sec:"E. 10/20 제안서 발표",id:"uiinslides",t:"제안서의 'Basic UI/UX'는 무엇으로?",en:"Basic UI/UX in the proposal",type:"single",
+  opts:[["proto","이 프로토타입 화면 캡처","바로 사용 가능"],["figma","Figma로 새로 그림",""],["sketch","손그림","교수님이 허용함"]],free:"의견"},
+ {sec:"E. 10/20 제안서 발표",id:"timeline",t:"일정안에 동의하나요?",en:"Timeline",type:"single",
+  why:"~11/3 기록·지도(혼자 쓰는 앱) → 11/9~13 WIP 점검 → ~11/30 계정·피드·팔로우 → 12/1~5 다듬기·영상 녹화 → 12/6 제출 → 12/8 인터뷰",
+  opts:[["yes","동의",""],["change","수정 필요","아래에 수정안"]],free:"수정안 / 의견"},
+ {sec:"F. 마무리",id:"etc",t:"그 밖에 꼭 하고 싶은 말",en:"Anything else?",type:"none",free:"자유롭게"},
+];
+let A={};try{A=JSON.parse(localStorage.getItem("logit-decide")||"{}")}catch(e){}
+let i=0;try{i=+localStorage.getItem("logit-decide-i")||0}catch(e){}
+const save=()=>{try{localStorage.setItem("logit-decide",JSON.stringify(A));localStorage.setItem("logit-decide-i",i)}catch(e){}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800)}
+function render(){
+ $("#pg").style.width=(i/Q.length*100)+"%";$("#cnt").textContent=i<Q.length?`Q${i+1} / ${Q.length}`:"완료";
+ $("#prev").disabled=i===0;
+ if(i>=Q.length)return renderSum();
+ const q=Q[i],a=A[q.id]||{sel:[],free:""};
+ $("#next").textContent=i===Q.length-1?"검토하기":"다음";
+ $("#card").innerHTML=`<div class="sec">${q.sec}</div><h1>Q${i+1}. ${q.t}</h1><div class="en">${q.en}</div>
+ ${q.why?`<div class="why">${q.why}</div>`:""}
+ ${q.opts?`<div class="opts ${q.visual?"vis":""} ${q.type==="multi"?"multi":""}">${q.opts.map(([v,l,d,pv])=>q.visual?
+  `<button class="opt vcard ${a.sel.includes(v)?"on":""}" data-v="${v}"><div class="pv">${pv||""}</div><div class="lb"><span class="mark"></span><div><b>${l}${d==="현재 프로토타입"?'<span class="badge">현재</span>':""}</b>${d&&d!=="현재 프로토타입"?`<small>${d}</small>`:""}</div></div></button>`
+  :`<button class="opt ${a.sel.includes(v)?"on":""}" data-v="${v}"><span class="mark"></span><div><b>${l}${d==="현재 프로토타입"||/\(현재 프로토타입\)/.test(d)?'<span class="badge">현재</span>':""}</b>${d?`<small>${d.replace(" (현재 프로토타입)","")}</small>`:""}</div></button>`).join("")}</div>`:""}
+ ${q.type==="multi"?`<div class="hint">${q.max?`최대 ${q.max}개`:"여러 개 선택 가능"}</div>`:""}
+ ${q.visual?`<div class="hint">현재 화면을 직접 눌러 보려면 <a href="${PROTO}" target="_blank">프로토타입 열기 ↗</a></div>`:""}
+ <div class="free"><label>${q.free||"직접 입력 / 의견"}</label><textarea id="free" rows="3" placeholder="선택지 외 의견, 이유, 다른 안을 자유롭게">${esc(a.free)}</textarea></div>`;
+ document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const v=b.dataset.v;let s=a.sel;
+  if(q.type==="single")s=s.includes(v)?[]:[v];else{if(s.includes(v))s=s.filter(x=>x!==v);else{if(q.max&&s.length>=q.max){toast(`최대 ${q.max}개까지 고를 수 있어요`);return}s=[...s,v]}}
+  A[q.id]={...a,sel:s,free:$("#free").value};save();render()});
+ $("#free").oninput=e=>{A[q.id]={sel:(A[q.id]||{sel:[]}).sel,free:e.target.value};save()};
+ window.scrollTo(0,0)}
+function label(q,v){const o=(q.opts||[]).find(x=>x[0]===v);return o?o[1]:v}
+function text(){const who=(A.who&&(A.who.sel[0]||A.who.free))||"이름 없음";
+ return `[logit 의사결정 답변] ${who}\n`+Q.map((q,k)=>{const a=A[q.id]||{sel:[],free:""};return `Q${k+1}. ${q.t}\n- 선택: ${a.sel.map(v=>label(q,v)).join(", ")||"(없음)"}${a.free?`\n- 의견: ${a.free.trim()}`:""}`}).join("\n\n")}
+function renderSum(){
+ $("#next").textContent="제출 (GitHub 이슈)";
+ const miss=Q.filter(q=>q.opts&&!(A[q.id]&&(A[q.id].sel.length||A[q.id].free))).map(q=>"Q"+(Q.indexOf(q)+1));
+ $("#card").innerHTML=`<div class="sec">검토</div><h1>답변을 확인하고 제출해 주세요</h1><div class="en">Review and submit</div>
+ ${miss.length?`<div class="why">아직 답하지 않은 질문: ${miss.join(", ")} (비워 둬도 제출은 됩니다)</div>`:""}
+ <div class="sum">${Q.map((q,k)=>{const a=A[q.id]||{sel:[],free:""};return `<div data-k="${k}" style="cursor:pointer"><b>Q${k+1}. ${q.t}</b>${esc(a.sel.map(v=>label(q,v)).join(", "))||'<span style="color:#B0B3B8">(선택 없음)</span>'}${a.free?`<div style="color:#3C3F46;margin-top:4px">“${esc(a.free)}”</div>`:""}</div>`}).join("")}</div>
+ <div class="why" style="margin-top:16px"><b>제출 방법</b><br>① <b>제출 (GitHub 이슈)</b>: 답변이 자동 복사되고 GitHub 이슈 작성 창이 열립니다. 본문이 비어 있으면 붙여넣기(Ctrl/⌘+V) 후 'Submit new issue'.<br>② GitHub 계정이 없으면 <a href="#" id="copy">답변 복사</a> 후 단톡방에 붙여 넣어 주세요.</div>`;
+ document.querySelectorAll(".sum div[data-k]").forEach(d=>d.onclick=()=>{i=+d.dataset.k;save();render()});
+ $("#copy").onclick=e=>{e.preventDefault();copy()};window.scrollTo(0,0)}
+async function copy(){const t=text();try{await navigator.clipboard.writeText(t);toast("답변을 복사했어요")}catch(e){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();toast("답변을 복사했어요")}}
+function submit(){const t=text();copy();const who=(A.who&&(A.who.sel[0]||A.who.free))||"이름 없음";
+ let body=t;let url=`https://github.com/keemlogan/logit/issues/new?title=${encodeURIComponent("[답변] "+who)}&labels=answer&body=`;
+ if((url+encodeURIComponent(body)).length>7500)body="(답변이 길어 자동으로 복사되었습니다. 여기에 붙여넣기 해 주세요: Ctrl/⌘+V)";
+ window.open(url+encodeURIComponent(body),"_blank")}
+$("#next").onclick=()=>{if(i<Q.length){i++;save();render()}else submit()};
+$("#prev").onclick=()=>{if(i>0){i--;save();render()}};
+render();
+</script>
+</body>
+</html>
