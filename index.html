@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hereabouts — UI prototype</title>
+<style>
+:root{--acc:#F2683C;--acc2:#FFE9E0;--do:#2F80ED;--do2:#E3EEFD;--ink:#1B1D21;--sub:#6B7078;--line:#E8E9EC;--bg:#F6F6F8;--card:#fff;--ok:#1E9E62}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#E9EAEE;font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Segoe UI",Roboto,sans-serif;color:var(--ink)}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
+input,textarea,select{font:inherit}
+.phone{position:relative;width:100%;height:100%;background:var(--bg);overflow:hidden;display:flex;flex-direction:column}
+@media (min-width:520px){body{display:flex;align-items:center;justify-content:center;gap:40px;padding:20px}
+ .phone{width:390px;height:844px;border-radius:44px;border:10px solid #111;box-shadow:0 30px 60px rgba(0,0,0,.25)}
+ .side{display:block!important}}
+.side{display:none;max-width:300px;font-size:14px;color:#444;line-height:1.55}
+.side h2{margin:0 0 6px;font-size:22px}.side ul{padding-left:18px;margin:8px 0}
+.status{height:34px;flex:none;display:flex;justify-content:space-between;align-items:center;padding:0 24px;font-size:13px;font-weight:600}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;position:relative}
+.screen::-webkit-scrollbar{display:none}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 16px 10px}
+.row{display:flex;align-items:center;gap:8px}.between{justify-content:space-between}
+h1{font-size:26px;margin:0;letter-spacing:-.4px}
+.loc{font-size:13px;color:var(--sub);display:flex;align-items:center;gap:4px;margin-top:2px}
+.seg{display:flex;background:#ECEDF0;border-radius:10px;padding:3px}
+.seg button{flex:1;padding:6px 10px;border-radius:8px;font-size:13px;font-weight:600;color:var(--sub)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:13px;font-weight:500}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.eat.on{background:var(--acc);border-color:var(--acc)}.chip.do.on{background:var(--do);border-color:var(--do)}
+.radius{background:#fff;border-radius:14px;padding:10px 12px;margin:10px 0 8px;border:1px solid var(--line)}
+.radius b{color:var(--acc)}
+input[type=range]{width:100%;accent-color:var(--acc);margin:6px 0 0}
+.ticks{display:flex;justify-content:space-between;font-size:10px;color:var(--sub)}
+.pad{padding:0 16px}
+.banner{background:#FFF6E5;border:1px solid #F5DDB0;color:#8A5A00;font-size:12.5px;border-radius:10px;padding:8px 10px;margin:4px 0 10px}
+.meta{font-size:12.5px;color:var(--sub)}
+.card{background:var(--card);border-radius:16px;border:1px solid var(--line);overflow:hidden;margin-bottom:12px}
+.pcard{display:flex;gap:12px;padding:12px;cursor:pointer}
+.thumb{width:76px;height:76px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-size:34px}
+.pname{font-weight:700;font-size:15.5px;line-height:1.25}
+.badges{display:flex;flex-wrap:wrap;gap:4px;margin:5px 0}
+.b{font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:5px;background:#F0F1F3;color:#555}
+.b.eat{background:var(--acc2);color:#C24518}.b.do{background:var(--do2);color:#1D5FC2}
+.b.gem{background:#F1E8FF;color:#6B32C9}.b.ver{background:#E2F5EC;color:var(--ok)}
+.quote{font-size:12.5px;color:#444;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.next{border-top:1px dashed var(--line);padding:8px 12px;font-size:12.5px;color:var(--sub)}
+.next b{color:var(--ink)}
+.sec{font-size:13px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin:18px 0 8px}
+.mapbox{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#EDEFE8}
+.mapbox svg{display:block;width:100%;height:100%}
+.tabbar{flex:none;height:78px;background:#fff;border-top:1px solid var(--line);display:flex;align-items:flex-start;padding-top:8px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;color:#9A9EA6}
+.tab svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab.on{color:var(--acc)}
+.fab{width:56px;height:56px;margin-top:-22px;border-radius:50%;background:var(--acc);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(242,104,60,.45)}
+.fab i{width:18px;height:18px;border-radius:50%;background:#fff;display:block}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 16px;border-radius:12px;font-weight:700;font-size:14.5px;background:var(--acc);color:#fff}
+.btn.sec2{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.dark{background:var(--ink)}
+.btn.full{width:100%}
+.post{padding:14px}
+.ava{width:36px;height:36px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-size:12.5px;margin:8px 0}
+.chain .s{background:#F3F4F6;border-radius:6px;padding:3px 7px;font-weight:600}
+.chain .m{color:var(--sub);font-size:11.5px}
+.stats{display:flex;gap:18px;margin:10px 0 4px}.stats div{font-size:11px;color:var(--sub)}.stats b{display:block;font-size:16px;color:var(--ink)}
+.actions{display:flex;gap:18px;border-top:1px solid var(--line);padding-top:10px;margin-top:8px;font-size:13px;color:var(--sub);font-weight:600}
+.hscroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}.hscroll::-webkit-scrollbar{display:none}
+.mini{flex:none;width:150px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer}
+.mini .thumb{width:100%;height:80px;border-radius:0}
+.mini div.t{padding:8px 10px;font-size:12.5px}
+.back{display:flex;align-items:center;gap:4px;font-weight:600;color:var(--acc);font-size:15px;padding:4px 0}
+.hero{height:190px;display:flex;align-items:center;justify-content:center;font-size:80px;position:relative}
+.hero .back{position:absolute;top:10px;left:12px;background:rgba(255,255,255,.92);border-radius:999px;padding:6px 12px}
+.kpis{display:flex;background:#fff;border:1px solid var(--line);border-radius:14px;margin:12px 0}
+.kpis div{flex:1;text-align:center;padding:10px 4px;font-size:11px;color:var(--sub)}.kpis div+div{border-left:1px solid var(--line)}
+.kpis b{display:block;font-size:18px;color:var(--ink)}
+.li{display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer}.li+.li{border-top:1px solid var(--line)}
+.pct{margin-left:auto;font-weight:700;font-size:13px}
+.bar{height:5px;border-radius:3px;background:#F0F1F3;margin-top:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc)}
+.tl{position:relative;padding-left:34px}
+.tl .node{position:relative;padding:4px 0 14px}
+.tl .num{position:absolute;left:-34px;top:2px;width:24px;height:24px;border-radius:50%;background:var(--acc);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.tl .leg{position:relative;font-size:12.5px;color:var(--sub);padding:2px 0 14px}
+.tl .leg:before{content:"";position:absolute;left:-23px;top:-14px;bottom:-2px;border-left:2px dashed #CDD0D5}
+.sheetbg{position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:50;display:flex;align-items:flex-end}
+.sheet{background:#fff;width:100%;max-height:88%;overflow-y:auto;border-radius:22px 22px 0 0;padding:10px 16px 24px}
+.grab{width:40px;height:5px;border-radius:3px;background:#D5D7DB;margin:0 auto 10px}
+.field{margin:12px 0}.field label{display:block;font-size:12.5px;font-weight:700;color:var(--sub);margin-bottom:6px}
+.field textarea,.field input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:14px;background:#FAFAFB}
+.opt{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer}
+.opt.on{border-color:var(--acc);background:#FFF8F5}
+.switch{margin-left:auto;width:44px;height:26px;border-radius:13px;background:#D5D7DB;position:relative;flex:none}
+.switch:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.switch.on{background:var(--ok)}.switch.on:after{left:21px}
+.toast{position:absolute;left:16px;right:16px;bottom:92px;z-index:60;background:var(--ink);color:#fff;border-radius:12px;padding:11px 14px;font-size:13.5px;box-shadow:0 8px 20px rgba(0,0,0,.25);opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none}
+.toast.show{opacity:1;transform:none}
+.rec-panel{background:#fff;border-radius:20px 20px 0 0;padding:16px;position:absolute;left:0;right:0;bottom:0;box-shadow:0 -6px 20px rgba(0,0,0,.08)}
+.big{font-size:30px;font-weight:800;letter-spacing:-.5px}
+.livechip{display:inline-flex;align-items:center;gap:6px;background:#E2F5EC;color:var(--ok);font-weight:700;font-size:12px;padding:4px 10px;border-radius:999px}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:bl 1s infinite}@keyframes bl{50%{opacity:.3}}
+.stopedit{border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;background:#fff}
+.empty{text-align:center;color:var(--sub);padding:30px 0;font-size:13.5px}
+.off{opacity:.55}
+</style>
+</head>
+<body>
+<div class="side">
+  <h2>Hereabouts</h2>
+  <div style="color:#888;margin-bottom:10px">UI/UX prototype · Mobile Programming team project</div>
+  <b>Click around:</b>
+  <ul>
+    <li><b>Nearby</b> — drag the radius slider (try 100 m), switch List/Map, filter Eat/Do</li>
+    <li>Tap a spot → <b>Where people went next</b></li>
+    <li><b>Feed</b> → ✏️ to write a post</li>
+    <li>Center ● → <b>Record</b> a route (simulated)</li>
+    <li><b>Trips</b> → trip timeline → Share</li>
+  </ul>
+  <div style="font-size:12px;color:#999">Mock data only. Restaurants/cafés are fictional.</div>
+</div>
+<div class="phone">
+  <div class="status"><span>9:41</span><span>●●● ▲ ▮</span></div>
+  <div class="screen" id="screen"></div>
+  <div class="tabbar" id="tabbar"></div>
+  <div class="toast" id="toast"></div>
+  <div id="overlay"></div>
+</div>
+
+<script>
+// ---------- mock data (meters from "me" at SeoulTech main gate; dx east, dy north) ----------
+const PL = {
+  oven:{name:"Oven 22 Bakery",cat:"Eat",tags:["Cafe","Cheap"],dx:100,dy:85,logged:23,revisit:80,verified:18,views:640,emoji:"🥐",bg:"#FCE7D6"},
+  forest:{name:"Gyeongchun Line Forest Path",cat:"Do",tags:["Nature","Walk"],dx:-60,dy:140,logged:58,revisit:92,verified:46,views:2140,emoji:"🌳",bg:"#DCEFD5"},
+  noodle:{name:"Gongneung Noodle Street",cat:"Eat",tags:["Cheap","Local"],dx:180,dy:-120,logged:41,revisit:86,verified:32,views:1310,emoji:"🍜",bg:"#FBE3CF"},
+  plat:{name:"Café Platform 3",cat:"Eat",tags:["Cafe","Quiet"],dx:320,dy:210,logged:9,revisit:100,verified:7,views:74,emoji:"☕",bg:"#EADFD3"},
+  pocha:{name:"Grandma's Tteokbokki Stall",cat:"Eat",tags:["Cheap","Local","Night"],dx:-420,dy:-310,logged:6,revisit:100,verified:4,views:48,emoji:"🌶️",bg:"#FBD9D3"},
+  dice:{name:"Dice Nine Board Game Café",cat:"Do",tags:["Night","Rainy day"],dx:-700,dy:500,logged:11,revisit:67,verified:8,views:96,emoji:"🎲",bg:"#E4E2FA"},
+  moon:{name:"Moon Jar Makgeolli Bar",cat:"Eat",tags:["Night","Local"],dx:600,dy:-650,logged:14,revisit:75,verified:11,views:210,emoji:"🍶",bg:"#E8EEF2"},
+  rail:{name:"Hwarangdae Railway Park",cat:"Do",tags:["Night","Photo"],dx:1400,dy:300,logged:47,revisit:89,verified:37,views:1820,emoji:"🚂",bg:"#E3E9F7"},
+  tomb:{name:"Taereung Royal Tomb",cat:"Do",tags:["Heritage","Nature"],dx:1900,dy:900,logged:19,revisit:75,verified:15,views:530,emoji:"🏯",bg:"#EFE7D8"},
+  bulam:{name:"Bulamsan Trail",cat:"Do",tags:["Nature","Hike"],dx:900,dy:2300,logged:26,revisit:83,verified:20,views:700,emoji:"⛰️",bg:"#DDEBDD"},
+};
+const NEXT = {
+  oven:[["forest",58,"walk",4],["noodle",25,"walk",5],["plat",17,"walk",6]],
+  forest:[["rail",55,"walk",18],["plat",30,"walk",7],["dice",15,"bus",12]],
+  noodle:[["forest",60,"walk",6],["plat",25,"walk",9],["moon",15,"walk",11]],
+  plat:[["forest",50,"walk",7],["rail",50,"bus",10]],
+  pocha:[["dice",67,"walk",9],["noodle",33,"walk",10]],
+  dice:[["pocha",100,"walk",9]],
+  moon:[["noodle",100,"walk",11]],
+  rail:[["tomb",44,"bus",9],["plat",33,"bus",10],["moon",23,"walk",20]],
+  tomb:[["bulam",50,"bus",15],["rail",50,"bus",9]],
+  bulam:[["tomb",100,"bus",15]],
+};
+const NOTES = {
+  oven:[["Sofia","Pistachio croissant on weekends only.",1],["Maria","Salt bread comes out at 3 pm. Gone by 3:30.",1],["Jun","Cheap Americano, students only get 10% off.",1]],
+  forest:[["Daniel","Rented a Ttareungyi bike at Gongneung stn — easy ride.",1],["Yuna","Local tip: the stretch near Hwarangdae is the prettiest.",1],["Leo","Walk it at sunset towards Hwarangdae — way better than any 'top 10' spot.",1],["Aiko","Lots of tiny cafés along the old rail tracks.",1],["Min","Crowded on weekends after 2 pm.",0]],
+  noodle:[["Ethan","Go before 12, queue is long after.",1],["Hana","Grew up here — this street hasn't changed in 20 years.",1],["Jun","₩6,000 kalguksu. Ask for extra kimchi.",1],["Maria","English menu at the 2nd shop from the corner.",1]],
+  plat:[["Kenji","Hand-drip coffee, ₩4,500. Wi-Fi is fast.",1],["Aiko","Only 6 seats. Perfect for studying, nobody talks.",1],["Leo","Owner was a train driver — ask him about it!",1]],
+  pocha:[["Hana","My mom’s favourite. Order the fish cake soup.",1],["Jun","Cash only. Best rice cakes in Nowon, no sign outside.",1]],
+  dice:[["Leo","English rule books for 20+ games.",1],["Min","A bit pricey after 9 pm.",0]],
+  moon:[["Maria","Try the chestnut makgeolli. Grandma owner is very kind.",1]],
+  rail:[["Sofia","Christmas lights in December are magical.",1],["Daniel","Nice for a night walk, felt safe.",1],["Aiko","Lights turn on at 6 pm, go then.",1],["Leo","Old trains you can walk into. Free.",1]],
+  tomb:[["Leo","Quiet, huge forest. Closed Mondays.",1]],
+  bulam:[["Min","1.5 h to the top, view of the whole north Seoul.",1]],
+};
+const U = {Maria:["#E26D5A","Exchange · PH"],Jun:["#3A86FF","Local"],Leo:["#2A9D8F","Exchange · DE"],Aiko:["#B5179E","Exchange · JP"],Min:["#F4A261","Local"],You:["#1B1D21","SeoulTech"],Sofia:["#E76F51","Exchange · ES"],Daniel:["#264653","Exchange · US"],Yuna:["#9B5DE5","Local"],Kenji:["#00A6A6","Exchange · JP"],Hana:["#F15BB5","Local"],Ethan:["#6A994E","Exchange · AU"]};
+const MODE = {walk:["🚶","walk"],bus:["🚌","bus"],subway:["🚇","subway"],plane:["✈️","flight"],boat:["⛴️","boat"],bike:["🚲","bike"]};
+let TRIPS = [
+  {id:"t5",user:"Sofia",title:"Night walk: rail park → makgeolli",date:"Oct 13",stops:["rail","moon"],legs:[["walk",20]],km:1.8,time:"3h 15m",caption:"Midterms done 🎉 Lights at the rail park, then chestnut makgeolli. 10/10.",likes:63,tags:["Night"],verified:true},
+  {id:"t6",user:"Hana",title:"Where I actually eat (local edition)",date:"Oct 12",stops:["pocha","noodle","oven"],legs:[["walk",10],["walk",5]],km:1.4,time:"1h 40m",caption:"Exchange students keep asking me, so here it is.",likes:88,tags:["Food","Local"],verified:true},
+  {id:"t7",user:"Daniel",title:"Bike the forest path",date:"Oct 10",stops:["forest","plat","rail"],legs:[["bike",7],["bike",12]],km:5.2,time:"2h 30m",caption:"Ttareungyi + coffee + trains. Perfect Sunday.",likes:35,tags:["Nature"],verified:true},
+  {id:"t8",user:"Kenji",title:"Rainy day: board games & tteokbokki",date:"Oct 8",stops:["dice","pocha"],legs:[["walk",9]],km:0.9,time:"4h 05m",caption:"For when it rains. Ask for the English rule book.",likes:21,tags:["Rainy day"],verified:false},
+  {id:"t1",user:"Maria",title:"Rainy Saturday in Gongneung",date:"Oct 11",stops:["oven","noodle","forest","rail"],legs:[["walk",5],["walk",6],["walk",18]],km:3.4,time:"4h 10m",caption:"BEST ≠ POPULAR. None of these are on a top-10 list and it was my favourite day so far.",likes:24,tags:["Food","Nature"],verified:true},
+  {id:"t2",user:"Jun",title:"₩15,000 cheap eats crawl",date:"Oct 9",stops:["pocha","noodle","plat"],legs:[["walk",10],["walk",9]],km:1.9,time:"2h 05m",caption:"Showed my exchange buddy how locals eat for cheap around campus.",likes:41,tags:["Food","Cheap"],verified:true},
+  {id:"t3",user:"Leo",title:"Royal tomb + trail, no tourists",date:"Oct 5",stops:["rail","tomb","bulam"],legs:[["bus",9],["bus",15]],km:9.8,time:"6h 30m",caption:"Took the 1155 bus. Bring water, no shops on the trail.",likes:17,tags:["Heritage","Nature"],verified:true},
+  {id:"t4",user:"Aiko",title:"Study day, 2 cafés + a walk",date:"Oct 2",stops:["plat","forest","oven"],legs:[["walk",7],["walk",4]],km:1.6,time:"5h 00m",caption:"For anyone who needs a quiet place before midterms.",likes:9,tags:["Cafe"],verified:false},
+];
+let MY = [
+  {id:"m1",user:"You",title:"First walk around campus",date:"Oct 12",stops:["oven","forest","rail"],legs:[["walk",4],["walk",18]],km:2.7,time:"3h 20m",tags:["Nature"],verified:true,mine:true},
+  {id:"m2",user:"You",title:"Philippines loop (summer)",date:"Aug 3–17",custom:[["Korea","🇰🇷",0,0],["Bohol","🏝️",620,-1400],["Cebu","🌆",560,-1250],["Palawan","🏖️",-180,-1500],["Manila","🏙️",120,-900]],legs:[["plane",260],["boat",120],["plane",75],["plane",80]],km:4980,time:"15 days",tags:["Island"],verified:true,mine:true},
+];
+const STEPS=[100,200,300,500,800,1000,1500,2000,3000];
+const S={tab:"nearby",stack:[],ri:3,cat:"All",tags:new Set(),sort:"hidden",view:"list",feed:"foryou",tripsView:"trips",saved:new Set(["plat"]),liked:new Set()};
+const dist=p=>Math.hypot(p.dx,p.dy);
+const fmt=d=>d<1000?Math.round(d/10)*10+" m":(d/1000).toFixed(1)+" km";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),2200)}
+function ava(n,s=36){const c=(U[n]||["#999"])[0];return `<div class="ava" style="background:${c};width:${s}px;height:${s}px;font-size:${s*.4}px">${n[0]}</div>`}
+
+// ---------- fake map ----------
+function mapBg(w,h){return `<rect width="${w}" height="${h}" fill="#EDEFE8"/>
+<path d="M${-20} ${h*.78} C ${w*.3} ${h*.7}, ${w*.55} ${h*.95}, ${w+20} ${h*.82}" stroke="#CFE0F0" stroke-width="26" fill="none"/>
+<ellipse cx="${w*.78}" cy="${h*.22}" rx="${w*.2}" ry="${h*.13}" fill="#D6E8CF"/><ellipse cx="${w*.15}" cy="${h*.3}" rx="${w*.12}" ry="${h*.09}" fill="#DCEBD3"/>
+${[.18,.42,.66].map(y=>`<line x1="0" y1="${h*y}" x2="${w}" y2="${h*y+18}" stroke="#fff" stroke-width="7"/>`).join("")}
+${[.25,.55,.85].map(x=>`<line x1="${w*x}" y1="0" x2="${w*x-22}" y2="${h}" stroke="#fff" stroke-width="7"/>`).join("")}
+<line x1="${w*.05}" y1="${h*.95}" x2="${w*.95}" y2="${h*.05}" stroke="#8CC07A" stroke-width="4" stroke-dasharray="7 5"/>
+<text x="${w*.6}" y="${h*.36}" font-size="9" fill="#6E9B5F" transform="rotate(-38 ${w*.6} ${h*.36})">Gyeongchun Forest Path</text>
+<text x="8" y="${h*.42-4}" font-size="9" fill="#9A9E96">Gongneung-ro</text>`}
+function pin(x,y,p,faded,label){const c=p.cat==="Eat"?"#F2683C":"#2F80ED";
+ return `<g data-a="place" data-id="${p.id}" style="cursor:pointer;opacity:${faded?.35:1}"><circle cx="${x}" cy="${y}" r="15" fill="${c}" stroke="#fff" stroke-width="3"/><text x="${x}" y="${y+5}" font-size="14" text-anchor="middle">${p.emoji}</text>${label?`<text x="${x}" y="${y+28}" font-size="10" font-weight="700" text-anchor="middle" fill="#333" stroke="#fff" stroke-width="3" paint-order="stroke">${esc(p.name.split(" ").slice(0,2).join(" "))}</text>`:""}</g>`}
+function meDot(x,y){return `<circle cx="${x}" cy="${y}" r="22" fill="#2F80ED" opacity=".15"/><circle cx="${x}" cy="${y}" r="8" fill="#2F80ED" stroke="#fff" stroke-width="3"/>`}
+function nearbyMap(r,list){const w=358,h=430,sc=w/(r*2.4),cx=w/2,cy=h/2;
+ const all=Object.entries(PL).map(([id,p])=>({id,...p}));
+ return `<div class="mapbox" style="height:${h}px"><svg viewBox="0 0 ${w} ${h}">${mapBg(w,h)}
+ <circle cx="${cx}" cy="${cy}" r="${r*sc}" fill="rgba(242,104,60,.08)" stroke="#F2683C" stroke-width="2" stroke-dasharray="6 4"/>
+ <text x="${cx+r*sc*.71+4}" y="${cy-r*sc*.71}" font-size="11" font-weight="700" fill="#F2683C">${fmt(r)}</text>
+ ${all.map(p=>{const x=cx+p.dx*sc,y=cy-p.dy*sc;if(x<-20||x>w+20||y<-20||y>h+20)return"";return pin(x,y,p,!list.find(q=>q.id===p.id),list.length<=6)}).join("")}
+ ${meDot(cx,cy)}</svg></div>`}
+function pts(t){return t.custom?t.custom.map(c=>({x:c[2],y:c[3]})):t.stops.map(s=>({x:PL[s].dx,y:PL[s].dy}))}
+function routeMap(t,w=358,h=170,big){const P=pts(t);const xs=P.map(p=>p.x),ys=P.map(p=>p.y);
+ const mnx=Math.min(...xs),mxx=Math.max(...xs),mny=Math.min(...ys),mxy=Math.max(...ys);const pad=34;
+ const sc=Math.min((w-pad*2)/Math.max(mxx-mnx,1),(h-pad*2)/Math.max(mxy-mny,1));
+ const ox=(w-(mxx-mnx)*sc)/2,oy=(h-(mxy-mny)*sc)/2;
+ const Q=P.map(p=>({x:ox+(p.x-mnx)*sc,y:h-(oy+(p.y-mny)*sc)}));
+ let segs="";for(let i=0;i<Q.length-1;i++){const m=t.legs[i][0];const a=Q[i],b=Q[i+1];
+  const dash=m==="walk"?"":m==="bus"||m==="subway"?'stroke-dasharray="8 5"':'stroke-dasharray="2 6"';
+  const d=m==="plane"||m==="boat"?`M${a.x} ${a.y} Q ${(a.x+b.x)/2} ${Math.min(a.y,b.y)-30} ${b.x} ${b.y}`:`M${a.x} ${a.y} L ${b.x} ${b.y}`;
+  segs+=`<path d="${d}" stroke="#F2683C" stroke-width="${big?5:4}" fill="none" stroke-linecap="round" ${dash}/>`;
+  if(big){const mx=(a.x+b.x)/2,my=(a.y+b.y)/2-(m==="plane"||m==="boat"?15:0);segs+=`<circle cx="${mx}" cy="${my}" r="11" fill="#fff" stroke="#F2683C"/><text x="${mx}" y="${my+4}" font-size="11" text-anchor="middle">${MODE[m][0]}</text>`}}
+ const nodes=Q.map((q,i)=>`<circle cx="${q.x}" cy="${q.y}" r="10" fill="${i===0?"#1E9E62":i===Q.length-1?"#1B1D21":"#F2683C"}" stroke="#fff" stroke-width="2.5"/><text x="${q.x}" y="${q.y+4}" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">${i+1}</text>`).join("");
+ const bg=t.custom?`<rect width="${w}" height="${h}" fill="#D9E9F5"/><text x="12" y="20" font-size="10" fill="#7A9AB5">Philippine Sea</text>`:mapBg(w,h);
+ return `<div class="mapbox" style="height:${h}px;border-radius:${big?0:12}px;border:${big?0:1}px solid var(--line)"><svg viewBox="0 0 ${w} ${h}">${bg}${segs}${nodes}</svg></div>`}
+
+// ---------- nearby ----------
+function nearbyList(r){
+ let list=Object.entries(PL).map(([id,p])=>({id,...p,d:dist(p)}));
+ if(S.cat!=="All")list=list.filter(p=>p.cat===S.cat);
+ if(S.tags.size)list=list.filter(p=>p.tags.some(t=>S.tags.has(t)));
+ const within=x=>list.filter(p=>p.d<=x);
+ let eff=r,idx=STEPS.indexOf(r),res=within(r),expanded=false;
+ while(res.length===0&&idx<STEPS.length-1){idx++;eff=STEPS[idx];res=within(eff);expanded=true}
+ // "hidden first": revisit intent + low exposure bonus, distance penalty — not raw popularity
+ const score=p=>p.revisit*.6+30/(1+p.views/60)-(p.d/eff)*20;
+ res.sort(S.sort==="near"?(a,b)=>a.d-b.d:S.sort==="revisit"?(a,b)=>b.revisit-a.revisit:(a,b)=>score(b)-score(a));
+ return {res,eff,expanded};
+}
+function placeCard(p){const n=(NEXT[p.id]||[])[0];const note=(NOTES[p.id]||[])[0];
+ return `<div class="card"><div class="pcard" data-a="place" data-id="${p.id}">
+ <div class="thumb" style="background:${p.bg}">${p.emoji}</div>
+ <div style="min-width:0;flex:1"><div class="row between"><div class="pname">${esc(p.name)}</div><div class="meta" style="flex:none">${fmt(p.d)}</div></div>
+ <div class="badges"><span class="b ${p.cat==="Eat"?"eat":"do"}">${p.cat.toUpperCase()}</span>${p.views<100?'<span class="b gem">💎 Hidden gem</span>':""}<span class="b ver">✓ ${p.verified} GPS visits</span></div>
+ <div class="meta">👥 ${p.logged} logged · <b style="color:var(--ok)">${p.revisit}%</b> would go back</div>
+ ${note?`<div class="quote">“${esc(note[1])}” — ${note[0]}</div>`:""}</div></div>
+ ${n?`<div class="next">➜ Next, people went to <b>${esc(PL[n[0]].name)}</b> · ${MODE[n[2]][0]} ${n[3]} min · ${n[1]}%</div>`:""}</div>`}
+function renderNearbyResults(){const r=STEPS[S.ri];const {res,eff,expanded}=nearbyList(r);
+ let h="";
+ if(expanded)h+=`<div class="banner">Nothing within <b>${fmt(r)}</b> yet — showing ${res.length} spot${res.length>1?"s":""} within <b>${fmt(eff)}</b>.</div>`;
+ h+=`<div class="row between" style="margin:4px 0 10px"><div class="meta"><b style="color:var(--ink)">${res.length} spots</b> logged by real visitors within ${fmt(eff)}</div>
+ <select id="sort" style="border:0;background:none;font-weight:700;font-size:12.5px;color:var(--acc)">
+ <option value="hidden" ${S.sort==="hidden"?"selected":""}>Sort: Hidden first</option><option value="revisit" ${S.sort==="revisit"?"selected":""}>Sort: Would go back</option><option value="near" ${S.sort==="near"?"selected":""}>Sort: Nearest</option></select></div>`;
+ if(S.view==="map")h+=nearbyMap(eff,res)+`<div style="height:10px"></div>`+res.slice(0,3).map(placeCard).join("");
+ else h+=res.length?res.map(placeCard).join(""):`<div class="empty">No spots match these filters.</div>`;
+ if(res.length<4)h+=`<div class="sec">Official info · TourAPI</div><div class="card"><div class="li off"><span style="font-size:22px">🏛️</span><div><b>Taereung Royal Tomb Museum</b><div class="meta">Public tourism data · not visitor-logged</div></div></div><div class="li off"><span style="font-size:22px">🚉</span><div><b>Old Hwarangdae Station</b><div class="meta">Public tourism data · not visitor-logged</div></div></div></div>`;
+ $("#nbres").innerHTML=h;
+ const so=$("#sort");if(so)so.onchange=e=>{S.sort=e.target.value;renderNearbyResults()};
+}
+function vNearby(){const r=STEPS[S.ri];const tags=["Cheap","Cafe","Nature","Night","Local","Heritage","Rainy day"];
+ return `<div class="top"><div class="row between"><div><h1>Nearby</h1><div class="loc">📍 SeoulTech main gate · Gongneung-dong</div></div>
+ <div class="seg" style="width:130px"><button class="${S.view==="list"?"on":""}" data-a="view" data-v="list">List</button><button class="${S.view==="map"?"on":""}" data-a="view" data-v="map">Map</button></div></div>
+ <div class="radius"><div class="row between"><span style="font-size:13.5px;font-weight:600">Within <b id="rlab">${fmt(r)}</b> of me</span><span class="meta">~${Math.max(1,Math.round(r/80))} min walk</span></div>
+ <input type="range" id="rad" min="0" max="${STEPS.length-1}" step="1" value="${S.ri}"><div class="ticks"><span>100 m</span><span>500 m</span><span>1 km</span><span>3 km</span></div></div>
+ <div class="chips">${["All","Eat","Do"].map(c=>`<button class="chip ${c.toLowerCase()} ${S.cat===c?"on":""}" data-a="cat" data-v="${c}">${c==="Eat"?"🍴 ":c==="Do"?"🎯 ":""}${c}</button>`).join("")}
+ <span style="width:1px;background:var(--line);flex:none"></span>${tags.map(t=>`<button class="chip ${S.tags.has(t)?"on":""}" data-a="tag" data-v="${t}">#${t}</button>`).join("")}</div></div>
+ <div class="pad" id="nbres"></div>`}
+
+// ---------- place detail ----------
+function vPlace(id){const p={id,...PL[id],d:dist(PL[id])};const trips=[...TRIPS,...MY].filter(t=>t.stops&&t.stops.includes(id));
+ return `<div class="hero" style="background:${p.bg}"><button class="back" data-a="back">‹ Back</button>${p.emoji}</div>
+ <div class="pad"><div style="margin-top:14px" class="badges"><span class="b ${p.cat==="Eat"?"eat":"do"}">${p.cat.toUpperCase()}</span>${p.tags.map(t=>`<span class="b">#${t}</span>`).join("")}${p.views<100?'<span class="b gem">💎 Hidden gem</span>':""}</div>
+ <h1 style="font-size:23px">${esc(p.name)}</h1><div class="loc">📍 ${fmt(p.d)} from you · Nowon-gu</div>
+ <div class="kpis"><div><b>${p.logged}</b>people logged</div><div><b style="color:var(--ok)">${p.revisit}%</b>would go back</div><div><b>${p.verified}</b>GPS-verified</div></div>
+ <div class="row" style="gap:8px"><button class="btn full ${S.saved.has(id)?"dark":""}" data-a="save" data-id="${id}">${S.saved.has(id)?"✓ Saved":"☆ Save spot"}</button><button class="btn sec2 full" data-a="toast" data-m="Opens in Google Maps / Kakao Map">↗ Directions</button></div>
+ <div class="sec">Where people went next</div>
+ <div class="meta" style="margin:-4px 0 8px">From ${p.logged} real trips that passed through here — only possible because we store routes, not just spots.</div>
+ <div class="card">${(NEXT[id]||[]).map(([n,pc,m,mi])=>`<div class="li" data-a="place" data-id="${n}"><span style="font-size:22px">${PL[n].emoji}</span><div style="flex:1"><b style="font-size:14px">${esc(PL[n].name)}</b><div class="meta">${MODE[m][0]} ${mi} min ${MODE[m][1]}</div><div class="bar"><i style="width:${pc}%"></i></div></div><span class="pct">${pc}%</span></div>`).join("")}</div>
+ <div class="sec">What people said</div>
+ <div class="card">${(NOTES[id]||[]).map(([u,t,rv])=>`<div class="li" style="cursor:default;align-items:flex-start">${ava(u,30)}<div><b style="font-size:13px">${u}</b> <span class="meta">${U[u][1]}</span><div style="font-size:13.5px;margin-top:2px">${esc(t)}</div><div class="meta" style="margin-top:3px">${rv?"👍 Would go back":"🤔 Maybe not again"}</div></div></div>`).join("")}</div>
+ <div class="sec">Day routes through here</div>
+ <div class="hscroll">${trips.map(t=>`<div class="mini" data-a="trip" data-id="${t.id}">${routeMap(t,150,80)}<div class="t"><b>${esc(t.title)}</b><div class="meta">${t.user} · ${t.stops.length} stops</div></div></div>`).join("")}</div>
+ <div style="height:24px"></div></div>`}
+
+// ---------- feed ----------
+function chain(t){if(t.custom)return t.custom.map((c,i)=>`<span class="s">${c[1]} ${c[0]}</span>${i<t.legs.length?`<span class="m">${MODE[t.legs[i][0]][0]}→</span>`:""}`).join("");
+ return t.stops.map((s,i)=>`<span class="s">${PL[s].emoji} ${esc(PL[s].name.split(" ").slice(0,2).join(" "))}</span>${i<t.legs.length?`<span class="m">${MODE[t.legs[i][0]][0]} ${t.legs[i][1]}′→</span>`:""}`).join("")}
+function postCard(t){const liked=S.liked.has(t.id);
+ return `<div class="card post"><div class="row">${ava(t.user)}<div style="flex:1"><b style="font-size:14px">${t.user}</b> <span class="meta">${(U[t.user]||[])[1]||""}</span><div class="meta">${t.date} · Nowon-gu, Seoul</div></div>${t.verified?'<span class="b ver">✓ GPS route</span>':'<span class="b">✎ Manual</span>'}</div>
+ <div data-a="trip" data-id="${t.id}" style="cursor:pointer"><div style="font-weight:800;font-size:17px;margin:10px 0 4px">${esc(t.title)}</div>${t.caption?`<div style="font-size:13.5px;color:#333">${esc(t.caption)}</div>`:""}
+ <div class="stats"><div><b>${t.km} km</b>Distance</div><div><b>${t.time}</b>Time</div><div><b>${(t.stops||t.custom).length}</b>Stops</div></div>
+ <div style="margin:8px 0">${routeMap(t,326,150)}</div><div class="chain">${chain(t)}</div></div>
+ <div class="actions"><button data-a="like" data-id="${t.id}" style="color:${liked?"var(--acc)":"inherit"}">${liked?"♥":"♡"} ${t.likes+(liked?1:0)}</button><button data-a="trip" data-id="${t.id}">💬 ${Math.round(t.likes/4)}</button><button data-a="toast" data-m="Trip saved to your list">🔖 Save trip</button></div></div>`}
+function vFeed(){const fresh=Object.entries(PL).map(([id,p])=>({id,...p})).filter(p=>p.views<220).sort((a,b)=>a.views-b.views);
+ const posts=TRIPS.filter(t=>S.feed!=="near"||t.stops.some(s=>dist(PL[s])<500));
+ return `<div class="top"><div class="row between"><h1>Feed</h1><button class="btn" style="padding:8px 14px;font-size:13.5px" data-a="compose">✏️ Post</button></div>
+ <div class="seg" style="margin-top:10px">${[["foryou","For you"],["following","Following"],["near","Near me"]].map(([k,l])=>`<button class="${S.feed===k?"on":""}" data-a="feedtab" data-v="${k}">${l}</button>`).join("")}</div></div>
+ <div class="pad">${posts.slice(0,1).map(postCard).join("")}
+ <div class="sec" style="margin-top:6px">💎 Fresh & unseen near you</div><div class="meta" style="margin:-4px 0 8px">Logged recently, seen by few — so good spots don't get buried.</div>
+ <div class="hscroll" style="margin-bottom:14px">${fresh.map(p=>`<div class="mini" data-a="place" data-id="${p.id}"><div class="thumb" style="background:${p.bg}">${p.emoji}</div><div class="t"><b>${esc(p.name)}</b><div class="meta">${fmt(dist(p))} · 👀 ${p.views} views</div></div></div>`).join("")}</div>
+ ${posts.slice(1).map(postCard).join("")}<div style="height:10px"></div></div>`}
+
+// ---------- trips ----------
+function vTrips(){const places=[...new Set(MY.flatMap(t=>t.stops||[]))];
+ return `<div class="top"><div class="row between"><h1>My Trips</h1></div>
+ <div class="kpis" style="margin:10px 0"><div><b>${MY.length}</b>trips</div><div><b>${places.length+S.saved.size}</b>places</div><div><b>${MY.reduce((a,t)=>a+(t.km<100?t.km:0),0).toFixed(1)}</b>km in Seoul</div></div>
+ <div class="seg">${[["trips","Trips"],["places","Places"],["saved","Saved"]].map(([k,l])=>`<button class="${S.tripsView===k?"on":""}" data-a="tv" data-v="${k}">${l}</button>`).join("")}</div></div>
+ <div class="pad">${S.tripsView==="trips"?MY.map(t=>`<div class="card" data-a="trip" data-id="${t.id}" style="cursor:pointer">${routeMap(t,358,140,false)}<div style="padding:12px"><div class="row between"><b style="font-size:15.5px">${esc(t.title)}</b><span class="meta">${t.date}</span></div><div class="chain">${chain(t)}</div><div class="meta">${t.km} km · ${t.time} · ${t.verified?"✓ GPS":"✎ Manual"} · ${t.posted?"🌍 Public":"🔒 Private"}</div></div></div>`).join("")
+ :`<div class="card">${(S.tripsView==="places"?places:[...S.saved]).map(id=>`<div class="li" data-a="place" data-id="${id}"><span style="font-size:24px">${PL[id].emoji}</span><div style="flex:1"><b style="font-size:14px">${esc(PL[id].name)}</b><div class="meta">${PL[id].cat} · ${fmt(dist(PL[id]))}</div></div><span class="meta">›</span></div>`).join("")||'<div class="empty">Nothing yet</div>'}</div>`}</div>`}
+function vTrip(id){const t=[...TRIPS,...MY].find(x=>x.id===id);const names=t.custom?t.custom.map(c=>[c[1],c[0],""]):t.stops.map(s=>[PL[s].emoji,PL[s].name,PL[s].cat]);
+ return `<div style="position:relative">${routeMap(t,390,260,true)}<button class="back" data-a="back" style="position:absolute;top:10px;left:12px;background:rgba(255,255,255,.92);border-radius:999px;padding:6px 12px">‹ Back</button></div>
+ <div class="pad"><div class="row" style="margin-top:14px">${ava(t.user,30)}<div class="meta"><b style="color:var(--ink)">${t.user}</b> · ${t.date}</div></div>
+ <h1 style="font-size:22px;margin-top:8px">${esc(t.title)}</h1>
+ <div class="stats"><div><b>${t.km} km</b>Distance</div><div><b>${t.time}</b>Time</div><div><b>${names.length}</b>Stops</div></div>
+ <div class="sec">Timeline</div><div class="tl">${names.map((n,i)=>`<div class="node"><div class="num">${i+1}</div><div ${t.stops?`data-a="place" data-id="${t.stops[i]}" style="cursor:pointer"`:""}><b>${n[0]} ${esc(n[1])}</b> ${n[2]?`<span class="b ${n[2]==="Eat"?"eat":"do"}">${n[2]}</span>`:""}${t.stops&&NOTES[t.stops[i]]?`<div class="meta">${esc(NOTES[t.stops[i]][0][1])}</div>`:""}</div></div>${i<t.legs.length?`<div class="leg">${MODE[t.legs[i][0]][0]} ${t.legs[i][1]} min ${MODE[t.legs[i][0]][1]}</div>`:""}`).join("")}</div>
+ ${t.mine?`<button class="btn full" data-a="compose" data-id="${t.id}">🌍 Share to feed</button>`:`<button class="btn full" data-a="toast" data-m="Saved — find it in My Trips › Saved">🔖 Save this route</button>`}
+ <div style="height:24px"></div></div>`}
+
+// ---------- record (simulated) ----------
+const RP=[[0,0],[100,85],[-60,140],[1400,300]];const RSTOP=["oven","forest","rail"];
+const R={on:false,t:0,timer:null,stops:[]};
+function recPos(t){// 0-6 walk,7-19 stay oven,20-25 walk,26-38 stay forest,39-48 bus,49+ stay rail
+ const seg=[[0,6,0,1],[20,25,1,2],[39,48,2,3]];
+ for(const [a,b,i,j] of seg){if(t<a)return null;if(t<=b){const f=(t-a)/(b-a);return {i,f,mode:j===3?"bus":"walk",moving:true}}}
+ return null}
+function recPath(){const t=R.t;const out=[RP[0]];const seg=[[0,6,0,1],[20,25,1,2],[39,48,2,3]];
+ for(const [a,b,i,j] of seg){if(t<a)break;const f=Math.min(1,(t-a)/(b-a));out.push([RP[i][0]+(RP[j][0]-RP[i][0])*f,RP[i][1]+(RP[j][1]-RP[i][1])*f])}return out}
+function vRecord(){const w=390,h=560;const P=recPath();const mnx=-120,mxx=1460,mny=-80,mxy=360;const sc=Math.min((w-40)/(mxx-mnx),(h-260)/(mxy-mny));
+ const X=x=>20+(x-mnx)*sc,Y=y=>(h-250)-(y-mny)*sc;const cur=P[P.length-1];
+ const mv=recPos(R.t);const stay=R.on&&!mv;
+ return `<div style="position:relative;height:100%;min-height:${h}px"><svg viewBox="0 0 ${w} ${h}" style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="xMidYMin slice">${mapBg(w,h)}
+ <polyline points="${P.map(p=>X(p[0])+","+Y(p[1])).join(" ")}" fill="none" stroke="#F2683C" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+ ${R.stops.map(s=>pin(X(PL[s].dx),Y(PL[s].dy),{id:s,...PL[s]},false,true)).join("")}${meDot(X(cur[0]),Y(cur[1]))}</svg>
+ <div style="position:absolute;top:10px;left:16px;right:16px" class="row between"><span class="livechip" style="${R.on?"":"background:#fff;color:var(--sub)"}">${R.on?'<i class="dot"></i> Recording':"● GPS ready"}</span><span class="livechip" style="background:#fff;color:var(--ink)">🔒 Privacy zone on</span></div>
+ <div class="rec-panel"><div class="row between"><div><div class="meta">Time</div><div class="big" id="rt">${Math.floor(R.t/60)}:${String(R.t%60).padStart(2,"0")}</div></div>
+ <div><div class="meta">Stops found</div><div class="big">${R.stops.length}</div></div><div><div class="meta">Now</div><div style="font-weight:700;font-size:15px;margin-top:6px">${!R.on?"—":stay?"📍 Staying":MODE[mv.mode][0]+" "+(mv.mode==="bus"?"On bus":"Walking")}</div></div></div>
+ <div class="meta" style="margin:10px 0 12px">Auto-detects a stop when you stay 10+ min within 100 m, and guesses walk / bus / subway between stops.</div>
+ ${R.on?`<div class="row"><button class="btn sec2 full" data-a="recff">⏩ Skip ahead</button><button class="btn dark full" data-a="recstop">■ Finish</button></div>`:`<button class="btn full" data-a="recstart" style="padding:15px">● Start recording</button><div class="meta" style="text-align:center;margin-top:8px">Demo: time runs ×150 so you can watch it work</div>`}</div></div>`}
+function recTick(){R.t++;const ev={16:0,35:1,58:2}[R.t];if(ev!==undefined&&!R.stops.includes(RSTOP[ev])){R.stops.push(RSTOP[ev]);toast(`📍 Stop detected: ${PL[RSTOP[ev]].name} (stayed 10+ min)`)}
+ if(R.t>=70){R.t=70}if(S.tab==="record"&&!S.stack.length)render()}
+function recSummary(){const legs=[["walk",4],["walk",4],["bus",9]].slice(0,Math.max(R.stops.length-1,0));
+ S.draft={stops:[...R.stops],legs,cat:R.stops.map(s=>PL[s].cat),rv:R.stops.map(()=>true)};
+ return `<div class="top"><div class="row between"><h1 style="font-size:22px">Review your trip</h1></div><div class="meta">${R.stops.length} stops detected · ${(R.t*0.05).toFixed(1)} km · ${Math.floor(R.t/60)}h ${R.t%60}m</div></div>
+ <div class="pad"><div class="field"><label>Trip title</label><input type="text" value="Saturday around campus"></div>
+ ${R.stops.map((s,i)=>`<div class="stopedit"><div class="row"><b>${i+1}. ${PL[s].emoji} ${esc(PL[s].name)}</b><span class="meta" style="margin-left:auto">✓ GPS</span></div>
+ <div class="row" style="margin-top:8px"><div class="seg" style="flex:1"><button class="${PL[s].cat==="Eat"?"on":""}" data-a="noop">🍴 Eat</button><button class="${PL[s].cat==="Do"?"on":""}" data-a="noop">🎯 Do</button></div>
+ <div class="seg" style="flex:1"><button class="on" data-a="noop">👍 Go back</button><button data-a="noop">🤔 Meh</button></div></div>
+ <input type="text" placeholder="One-line tip for others (optional)" style="width:100%;margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:9px;font-size:13.5px"></div>
+ ${i<R.stops.length-1?`<div class="meta" style="text-align:center;margin:-4px 0 6px">${MODE[legs[i][0]][0]} ${legs[i][1]} min ${MODE[legs[i][0]][1]} <span style="color:var(--acc)">· change</span></div>`:""}`).join("")||'<div class="empty">No stops yet — record a bit longer.</div>'}
+ <div class="opt on"><span>🔒</span><div><b style="font-size:13.5px">Hide start & end (200 m)</b><div class="meta">Keeps your home / dorm private when shared</div></div><span class="switch on"></span></div>
+ <div class="row" style="margin-top:12px"><button class="btn sec2 full" data-a="recdiscard">Discard</button><button class="btn full" data-a="recsave">Save trip</button></div><div style="height:20px"></div></div>`}
+
+// ---------- me ----------
+function vMe(){return `<div class="top"><h1>Me</h1></div><div class="pad"><div class="card" style="padding:16px"><div class="row">${ava("You",56)}<div><b style="font-size:17px">Logan</b><div class="meta">SeoulTech · ITM</div></div></div>
+ <div class="kpis"><div><b>${MY.length}</b>trips</div><div><b>3</b>tips liked</div><div><b>1</b>hidden gem found</div></div>
+ <div class="badges"><span class="b ver">✓ Verified explorer</span><span class="b gem">💎 Gem finder</span><span class="b eat">🍜 Noodle street regular</span></div></div>
+ <div class="sec">Settings</div><div class="card">
+ ${[["🔒","Privacy zone","Hide 200 m around home & dorm",1],["🌐","Language","English / 한국어",0],["📍","Default radius","500 m",0],["🔔","Next-stop tips","Notify when a logged spot is nearby",1]].map(([e,a,b,s])=>`<div class="li" style="cursor:default"><span style="font-size:20px">${e}</span><div style="flex:1"><b style="font-size:14px">${a}</b><div class="meta">${b}</div></div>${s?'<span class="switch on"></span>':'<span class="meta">›</span>'}</div>`).join("")}</div></div>`}
+
+// ---------- sheets ----------
+function sheet(html){$("#overlay").innerHTML=`<div class="sheetbg" data-a="closebg"><div class="sheet"><div class="grab"></div>${html}</div></div>`}
+function composeSheet(pre){S.pick=pre||MY[0].id;S.ctags=new Set(["Food"]);
+ sheet(`<div class="row between"><b style="font-size:18px">New post</b><button data-a="close" class="meta">Cancel</button></div>
+ <div class="field"><label>Pick a trip</label>${MY.map(t=>`<div class="opt ${S.pick===t.id?"on":""}" data-a="pick" data-id="${t.id}"><span style="font-size:20px">${t.custom?"✈️":"🚶"}</span><div><b style="font-size:13.5px">${esc(t.title)}</b><div class="meta">${t.date} · ${(t.stops||t.custom).length} stops</div></div></div>`).join("")}</div>
+ <div class="field"><label>Caption</label><textarea id="cap" rows="3" placeholder="What made this day worth it? (not just the famous spots)"></textarea></div>
+ <div class="field"><label>Tags</label><div class="chips" style="flex-wrap:wrap">${["Food","Nature","Heritage","Cafe","Night","Cheap","Rainy day"].map(t=>`<button class="chip ${S.ctags.has(t)?"on":""}" data-a="ctag" data-v="${t}">#${t}</button>`).join("")}</div></div>
+ <div class="field"><label>Who can see</label><div class="seg"><button class="on" data-a="segpick">🌍 Public</button><button data-a="segpick">👥 Friends</button><button data-a="segpick">🔒 Only me</button></div></div>
+ <div class="opt on" style="cursor:default"><span>🔒</span><div><b style="font-size:13.5px">Privacy zone</b><div class="meta">Start/end within 200 m of home are hidden</div></div><span class="switch on"></span></div>
+ <button class="btn full" data-a="post" style="margin-top:8px;padding:14px">Post to feed</button>`)}
+function manualSheet(){sheet(`<div class="row between"><b style="font-size:18px">Add trip manually</b><button data-a="close" class="meta">Cancel</button></div>
+ <div class="meta">For trips you didn't record with GPS (they get a ✎ Manual label).</div>
+ <div class="field"><label>Title</label><input type="text" placeholder="e.g. Busan weekend"></div>
+ <div class="field"><label>Stops & how you moved</label>
+ ${["Seoul Station","Haeundae Beach","Gamcheon Culture Village"].map((s,i)=>`<div class="opt" style="cursor:default"><span class="b">${i+1}</span><b style="font-size:13.5px">${s}</b><span class="meta" style="margin-left:auto">${i===0?"Nov 1, 9:00":i===1?"13:30":"16:00"}</span></div>${i<2?`<div class="chips" style="margin:-2px 0 8px 30px">${["🚄 train","🚌 bus","🚶 walk","✈️ flight","⛴️ boat"].map((m,k)=>`<button class="chip ${k===(i===0?0:1)?"on":""}" data-a="segpick">${m}</button>`).join("")}</div>`:""}`).join("")}
+ <button class="btn sec2 full" data-a="noop">+ Add stop (search place)</button></div>
+ <button class="btn full" data-a="close" data-m="Trip saved (demo)" style="padding:14px">Save trip</button>`)}
+
+// ---------- render ----------
+const ICON={nearby:'<path d="M12 21s-6-5.3-6-10a6 6 0 1 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/>',feed:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/>',trips:'<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6"/>',me:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'};
+function render(){const top=S.stack[S.stack.length-1];const sc=$("#screen");
+ if(top)sc.innerHTML=top.t==="place"?vPlace(top.id):top.t==="trip"?vTrip(top.id):recSummary();
+ else sc.innerHTML={nearby:vNearby,feed:vFeed,record:vRecord,trips:vTrips}[S.tab]();
+ if(!top&&S.tab==="nearby"){renderNearbyResults();$("#rad").oninput=e=>{S.ri=+e.target.value;$("#rlab").textContent=fmt(STEPS[S.ri]);renderNearbyResults()}}
+ const tb=(k,l)=>`<button class="tab ${S.tab===k?"on":""}" data-a="tab" data-v="${k}"><svg viewBox="0 0 24 24">${ICON[k]}</svg>${l}</button>`;
+ $("#tabbar").innerHTML=tb("nearby","Nearby")+tb("feed","Feed")+`<div class="tab" style="color:var(--acc)"><button class="fab" data-a="tab" data-v="record"><i></i></button>Record</div>`+tb("trips","Trips");
+}
+function go(t,id){S.stack.push({t,id});render();$("#screen").scrollTop=0}
+document.addEventListener("click",e=>{const el=e.target.closest("[data-a]");if(!el)return;const a=el.dataset.a,v=el.dataset.v,id=el.dataset.id;
+ if(a==="closebg"&&e.target!==el)return;
+ switch(a){
+  case "tab":S.tab=v;S.stack=[];render();$("#screen").scrollTop=0;break;
+  case "view":S.view=v;render();break;
+  case "cat":S.cat=v;render();break;
+  case "tag":S.tags.has(v)?S.tags.delete(v):S.tags.add(v);render();break;
+  case "place":go("place",id);break;
+  case "trip":go("trip",id);break;
+  case "back":S.stack.pop();render();break;
+  case "save":S.saved.has(id)?S.saved.delete(id):S.saved.add(id);render();toast(S.saved.has(id)?"Saved to My Trips › Saved":"Removed");break;
+  case "like":S.liked.has(id)?S.liked.delete(id):S.liked.add(id);render();break;
+  case "feedtab":S.feed=v;render();break;
+  case "tv":S.tripsView=v;render();break;
+  case "toast":toast(el.dataset.m);break;
+  case "compose":composeSheet(id);break;
+  case "manual":manualSheet();break;
+  case "pick":S.pick=id;document.querySelectorAll('[data-a="pick"]').forEach(o=>o.classList.toggle("on",o.dataset.id===id));break;
+  case "ctag":S.ctags.has(v)?S.ctags.delete(v):S.ctags.add(v);el.classList.toggle("on");break;
+  case "segpick":[...el.parentNode.children].forEach(c=>c.classList.toggle("on",c===el));break;
+  case "post":{const t=MY.find(x=>x.id===S.pick);const cap=$("#cap").value.trim();
+   TRIPS.unshift({...t,id:"p"+Date.now(),user:"You",caption:cap||"Shared from my trips.",likes:0,tags:[...S.ctags],date:"Just now"});t.posted=true;
+   $("#overlay").innerHTML="";S.tab="feed";S.stack=[];S.feed="foryou";render();$("#screen").scrollTop=0;toast("Posted! Your stops now show up in Nearby for others.");break}
+  case "close":case "closebg":$("#overlay").innerHTML="";if(el.dataset.m)toast(el.dataset.m);break;
+  case "recstart":R.on=true;R.t=0;R.stops=[];clearInterval(R.timer);R.timer=setInterval(recTick,400);render();toast("Recording. Keeps going with the screen off (foreground service).");break;
+  case "recff":R.t=Math.min(R.t+12,70);recTick();break;
+  case "recstop":clearInterval(R.timer);R.on=false;go("summary");break;
+  case "recdiscard":S.stack=[];R.t=0;R.stops=[];render();break;
+  case "recsave":{const st=S.draft.stops;if(st.length){MY.unshift({id:"m"+Date.now(),user:"You",title:"Saturday around campus",date:"Today",stops:st,legs:S.draft.legs,km:+(R.t*0.05).toFixed(1),time:`${Math.floor(R.t/60)}h ${R.t%60}m`,tags:[],verified:true,mine:true})}
+   R.t=0;R.stops=[];S.stack=[];S.tab="trips";S.tripsView="trips";render();toast("Trip saved. Share it from the trip page.");break}
+ }});
+render();
+</script>
+</body>
+</html>
