@@ -204,7 +204,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border:0;border-radiu
 .edit{border-bottom:.5px solid var(--line);padding:14px 0;display:flex;gap:12px}
 .edit img{width:56px;height:56px;border-radius:8px;object-fit:cover;flex:none}
 .edit input{width:100%;border:0;border-bottom:.5px solid var(--line);outline:0;padding:8px 0 6px;font-size:14px;background:none}
-.banner{position:absolute;top:48px;left:8px;right:8px;z-index:60;background:rgba(250,250,250,.97);border-radius:16px;box-shadow:0 6px 24px rgba(0,0,0,.18);padding:11px 14px;display:flex;gap:10px;align-items:center;transform:translateY(-140%);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+.banner{position:absolute;top:48px;left:8px;right:8px;z-index:60;background:rgba(250,250,250,.97);border-radius:16px;box-shadow:0 6px 24px rgba(0,0,0,.18);padding:11px 14px;display:flex;gap:10px;align-items:center;transform:translateY(-220px);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
 .banner.show{transform:none}
 .banner .ic{width:34px;height:34px;border-radius:8px;background:var(--acc);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
 .banner b{font-size:14px;display:block}.banner span{font-size:13.5px;color:#3A3D44}
@@ -216,7 +216,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border:0;border-radiu
   <b>Hereabouts</b>
   Clickable UI prototype for our Mobile Programming team project. Data is mocked; café and restaurant names are made up.<br><br>
   Try: drag the radius on Nearby, open a place, write a post from Home, and record a walk.<br><br>
-  <a href="img/credits.json">Photo credits (Wikimedia Commons)</a> · Map © OpenStreetMap, CARTO
+  <a href="img/credits.json">Photo credits (Wikimedia Commons)</a> · Map © OpenStreetMap contributors
 </div>
 <div class="phone">
   <div class="status" id="status"><span>9:41</span><span class="row" style="gap:5px"><svg width="18" height="11" viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx=".7"/><rect x="5" y="5" width="3" height="6" rx=".7"/><rect x="10" y="2.5" width="3" height="8.5" rx=".7"/><rect x="15" y="0" width="3" height="11" rx=".7"/></svg><svg width="16" height="11" viewBox="0 0 16 11"><path d="M8 2.2c2.2 0 4.2.8 5.7 2.2l1.1-1.1A9.6 9.6 0 0 0 8 .6 9.6 9.6 0 0 0 1.2 3.3l1.1 1.1C3.8 3 5.8 2.2 8 2.2Zm0 3.2c1.3 0 2.5.5 3.4 1.3l1.1-1.1A6.5 6.5 0 0 0 8 3.8c-1.7 0-3.3.7-4.5 1.8l1.1 1.1c.9-.8 2.1-1.3 3.4-1.3Zm0 3.2c-.5 0-1 .2-1.3.5L8 10.4l1.3-1.3c-.3-.3-.8-.5-1.3-.5Z"/></svg><svg width="27" height="12" viewBox="0 0 27 12"><rect x=".5" y=".5" width="23" height="11" rx="3" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="1.6"/><rect x="24.5" y="4" width="1.6" height="4" rx=".6" opacity=".4"/></svg></span></div>
@@ -334,9 +334,9 @@ const kmOf=t=>(rpath(t).reduce((a,p,i,arr)=>i?a+Math.hypot(p[0]-arr[i-1][0],p[1]
 function banner(t,s,icon){const b=$("#banner");$("#bt").textContent=t;$("#bs").textContent=s||"";$("#bic").innerHTML=ic(icon||"check",18);b.classList.add("show");clearTimeout(b._t);b._t=setTimeout(()=>b.classList.remove("show"),2600)}
 
 let MAPS=[];
-const TILE="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+const TILE="https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 function mk(el,live){const m=L.map(el,{zoomControl:false,dragging:!!live,scrollWheelZoom:!!live,doubleClickZoom:!!live,touchZoom:!!live,boxZoom:false,keyboard:false});
- m.attributionControl.setPrefix(false);L.tileLayer(TILE,{subdomains:"abcd",maxZoom:19,attribution:"© OpenStreetMap © CARTO"}).addTo(m);MAPS.push(m);return m}
+ m.attributionControl.setPrefix(false);L.tileLayer(TILE,{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(m);m.setView(ME,15);MAPS.push(m);return m}
 const div=(html,s)=>L.divIcon({html,className:"",iconSize:[s,s],iconAnchor:[s/2,s/2]});
 const tripPts=t=>t.custom?t.custom.map(c=>c[1]):t.stops.map(s=>ll(PL[s]));
 function drawTrip(m,t,full){const P=tripPts(t);
