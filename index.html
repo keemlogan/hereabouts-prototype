@@ -320,7 +320,7 @@ function drawLog(m,t,full){const pts=[];
 
 // ---------- shared Strava-style card ----------
 function card(t,o={}){const sv=S.saved.has(t.id);
- return `<article class="card"><div class="ch" data-a="user" data-id="${t.u}">${av(t.u,36)}<div class="grow"><b>${U[t.u][1]}</b><div class="mute">${t.when} · ${esc(t.region)}${o.vis?` · ${VIS[t.vis][0]}`:""}</div></div>${o.lk?'<span class="lk">Lesser-known</span>':""}</div>
+ return `<article class="card"><div class="ch" data-a="user" data-id="${t.u}">${av(t.u,36)}<div class="grow"><b>${U[t.u][1]}</b><div class="mute">${esc(t.region)}${o.vis?` · ${VIS[t.vis][0]}`:""}</div></div>${o.lk?'<span class="lk">Lesser-known</span>':""}</div>
  <div class="ct" data-a="log" data-id="${t.id}"><h3>${esc(t.title)}</h3>${t.cap?`<p>${esc(t.cap)}</p>`:""}
  <div class="big"><div>Distance<b>${kmTxt(t.km)}</b></div><div>Time<b>${t.time}</b></div><div>Spots<b>${t.spots.length}</b></div></div></div>
  <div class="cm" id="cm-${t.id}" data-a="log" data-id="${t.id}"></div>
@@ -440,7 +440,7 @@ function vHistory(){return `<div class="nav line"><div class="l"><button data-a=
 // ---------- log detail ----------
 function vLog(id){const t=findLog(id);const mine=t.u==="you";
  return `<div class="hero"><div id="dmap" class="fullmap"></div><button class="fbtn" style="left:12px" data-a="back">${ic("back")}</button><button class="fbtn" style="right:12px" data-a="banner" data-t="Link copied" data-s="${t.vis==="public"?"Anyone can open this log on the web":"Only public logs can be shared by link"}" data-i="send">${ic("send",18)}</button></div>
- <div style="padding:12px 14px 0;cursor:pointer" class="row" data-a="user" data-id="${t.u}">${av(t.u,34)}<div class="grow"><b style="font-size:14px">${U[t.u][1]}</b><div class="mute">${esc(t.region)} · ${t.when} · ${VIS[t.vis][0]}</div></div></div>
+ <div style="padding:12px 14px 0;cursor:pointer" class="row" data-a="user" data-id="${t.u}">${av(t.u,34)}<div class="grow"><b style="font-size:14px">${U[t.u][1]}</b><div class="mute">${esc(t.region)} · ${VIS[t.vis][0]}</div></div></div>
  <h1 style="font-size:22px;margin:10px 14px 2px;letter-spacing:-.4px">${esc(t.title)}</h1>${t.cap?`<div style="padding:0 14px;font-size:14.5px;color:var(--sub)">${esc(t.cap)}</div>`:""}
  <div class="stats"><div>Distance<b>${kmTxt(t.km)}</b></div><div>Time<b>${t.time}</b></div><div>Spots<b>${t.spots.length}</b></div></div>
  ${mine?`<div class="insight">${ic("eye",14)} Only you can see these numbers<div class="row"><div><b>${t.views}</b>views</div><div><b>${t.saves}</b>saves</div><div><b>${t.views?Math.round(t.saves/t.views*100):0}%</b>save rate</div></div></div>`
